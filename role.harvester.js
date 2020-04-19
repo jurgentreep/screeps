@@ -12,19 +12,21 @@ var roleHarvester = {
         }
         if (creep.memory.harvesting && creep.store.getFreeCapacity() === 0) {
             creep.memory.harvesting = false;
-            creep.say('Transporting energy');
+            creep.say('Transport');
         }
         
         if (creep.memory.harvesting === true) {
-            var sources = creep.room.find(FIND_SOURCES);
-            sources = _.sortBy(sources, s => creep.pos.getRangeTo(s));
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+            });
+            
+            if(creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container)
             }
         } else if (roomFull === true) {
             creep.moveTo(Game.spawns['Spawn1']);
         } else {
-            var targets = creep.room.find(FIND_STRUCTURES, {
+            const targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_SPAWN ||

@@ -1,6 +1,7 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+const roleSpecial = require('role.special');
 
 const spawnCreep = (role, newName, amountOfHarvesters) => {
     const energyAvailable = Game.spawns['Spawn1'].room.energyAvailable;
@@ -8,6 +9,14 @@ const spawnCreep = (role, newName, amountOfHarvesters) => {
     
     if (role === 'harvester' && amountOfHarvesters < 1 && energyAvailable < 600) {
         bodyParts = [WORK, CARRY, MOVE];
+    }
+    
+    if (role === 'special') {
+        bodyParts = [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE];
+        
+        if (energyAvailable < 600) {
+            bodyParts = [WORK, CARRY, MOVE];
+        }
     }
 
     Game.spawns['Spawn1'].spawnCreep(bodyParts, newName,
@@ -28,6 +37,7 @@ module.exports.loop = function () {
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+    const specials = _.filter(Game.creeps, (creep) => creep.memory.role == 'special');
     
     const sites = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
 
@@ -35,7 +45,11 @@ module.exports.loop = function () {
         var newName = 'Harvester' + Game.time;
         console.log('Spawning new harvester: ' + newName);
         spawnCreep('harvester', newName, harvesters.length);
-    } else if(builders.length < 1 && sites.length > 0) {
+    } else if (specials.length < 1) {
+        var newName = 'Special' + Game.time;
+        console.log('Spawning new special: ' + newName);
+        spawnCreep('special', newName);
+    } else if(builders.length < 1) {
         var newName = 'Builder' + Game.time;
         console.log('Spawning new builder: ' + newName);
         spawnCreep('builder', newName);
@@ -64,6 +78,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
+        }
+        if(creep.memory.role == 'special') {
+            roleSpecial.run(creep);
         }
     }
 }
