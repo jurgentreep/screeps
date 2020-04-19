@@ -2,10 +2,6 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        const energyAvailable = Game.spawns['Spawn1'].room.energyAvailable;
-        const energyCapacityAvailable = Game.spawns['Spawn1'].room.energyCapacityAvailable;
-        const roomFull = energyAvailable === energyCapacityAvailable;
-        
         if (!creep.memory.harvesting && creep.store.getUsedCapacity() === 0) {
             creep.memory.harvesting = true;
             creep.say('Harvesting');
@@ -23,10 +19,8 @@ var roleHarvester = {
             if(creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(container)
             }
-        } else if (roomFull === true) {
-            creep.moveTo(Game.spawns['Spawn1']);
         } else {
-            const targets = creep.room.find(FIND_STRUCTURES, {
+            const energyContainers = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_SPAWN ||
@@ -34,9 +28,18 @@ var roleHarvester = {
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
             });
-            if(targets.length > 0) {
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            if(energyContainers.length > 0) {
+                if(creep.transfer(energyContainers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(energyContainers[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            } else {
+                const sites = creep.room.find(FIND_CONSTRUCTION_SITES);
+                if(sites.length) {
+                    if(creep.build(sites[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(sites[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
+                } else {
+                    creep.moveTo(9, 35);
                 }
             }
         }

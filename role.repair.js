@@ -1,4 +1,4 @@
-var roleBuilder = {
+const roleRepair = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
@@ -12,15 +12,6 @@ var roleBuilder = {
         }
 
         if(creep.memory.building) {
-            // var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            // if(targets.length) {
-            //     if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-            //         creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            //     }
-            // } else {
-            //     creep.moveTo(22,26);
-            // }
-            
             const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return ((structure.structureType == STRUCTURE_ROAD || structure.structureType == STRUCTURE_CONTAINER) && structure.hits < structure.hitsMax);
@@ -31,6 +22,8 @@ var roleBuilder = {
                 if(creep.repair(target) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
+            } else {
+                creep.moveTo(9, 35);
             }
         }
         else {
@@ -45,4 +38,4 @@ var roleBuilder = {
     }
 };
 
-module.exports = roleBuilder;
+module.exports = roleRepair;
