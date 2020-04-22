@@ -49,27 +49,27 @@ export const manageCreeps = (room: Room, spawn: StructureSpawn) => {
     {
       role: 'transfer',
       minimum: 1,
-      object: roleTransfer
+      runner: roleTransfer
     },
     {
       role: 'harvester',
       minimum: 1,
-      object: roleHarvester
+      runner: roleHarvester
     },
     {
       role: 'special',
       minimum: 1,
-      object: roleSpecial
+      runner: roleSpecial
     },
     {
       role: 'repair',
       minimum: 1,
-      object: roleRepair
+      runner: roleRepair
     },
     {
       role: 'upgrader',
       minimum: 3,
-      object: roleUpgrader
+      runner: roleUpgrader
     },
   ];
 
@@ -79,13 +79,13 @@ export const manageCreeps = (room: Room, spawn: StructureSpawn) => {
     creeps: _.filter(Game.creeps, (creep) => creep.memory.role === role)
   }));
 
-  roles.forEach(({ role, minimum, object, creeps }) => {
+  roles.forEach(({ role, minimum, runner, creeps }) => {
     if (creeps.length < minimum) {
       spawnCreep(role, room, spawn);
     }
 
     creeps.forEach((creep) => {
-      object.run(creep);
+      runner(creep);
     });
   });
 
