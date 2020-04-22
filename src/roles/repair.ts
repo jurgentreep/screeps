@@ -1,6 +1,6 @@
 export const roleRepair = {
   run: function (creep: Creep) {
-    if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
+    if (creep.memory.working && creep.store.getUsedCapacity() == 0) {
       creep.memory.working = false;
     }
     if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
@@ -8,15 +8,18 @@ export const roleRepair = {
     }
 
     if (creep.memory.working) {
-      const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      const damagedStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
-          return ((structure.structureType == STRUCTURE_ROAD || structure.structureType == STRUCTURE_CONTAINER) && structure.hits < structure.hitsMax);
+          return (
+            (structure.structureType == STRUCTURE_ROAD || structure.structureType == STRUCTURE_CONTAINER) &&
+            structure.hits < structure.hitsMax
+          );
         }
       });
 
-      if (target) {
-        if (creep.repair(target) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+      if (damagedStructures) {
+        if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
         creep.moveTo(9, 35);
@@ -24,11 +27,13 @@ export const roleRepair = {
     }
     else {
       const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => s.structureType == STRUCTURE_STORAGE && s.store[RESOURCE_ENERGY] > 0
+        filter: (s) => s.structureType == STRUCTURE_STORAGE && s.store.getUsedCapacity() > 0
       });
 
-      if (container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(container)
+      if (container) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(container)
+        }
       }
     }
   }

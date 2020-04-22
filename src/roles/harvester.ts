@@ -14,8 +14,10 @@ export const roleHarvester = {
         }
       });
 
-      if (container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(container)
+      if (container) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(container)
+        }
       }
     } else {
       const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -27,8 +29,10 @@ export const roleHarvester = {
         }
       });
 
-      if (energyContainer && creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff' } });
+      if (energyContainer) {
+        if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff' } });
+        }
       } else {
         creep.moveTo(9, 35);
       }
