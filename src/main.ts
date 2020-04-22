@@ -2,17 +2,15 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import { spawnCreep } from "spawnCreep";
 import { defend } from "defend";
 import { transferEnergy } from "transferEnergy";
-import { roleHarvester } from "role.harvester";
-import { roleUpgrader } from "role.upgrader";
-import { roleSpecial } from "role.special";
-import { roleRepair } from "role.repair";
-import { roleTransfer } from "role.transfer";
+import { roleHarvester } from "roles/harvester";
+import { roleUpgrader } from "roles/upgrader";
+import { roleSpecial } from "roles/special";
+import { roleRepair } from "roles/repair";
+import { roleTransfer } from "roles/transfer";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  console.log(`Current game tick is ${Game.time}`);
-
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
