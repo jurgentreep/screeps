@@ -85,7 +85,7 @@ export const manageCreeps = (room: Room, spawn: StructureSpawn) => {
     }
 
     creeps.forEach((creep) => {
-      object.run(creep, room);
+      object.run(creep);
     });
   });
 

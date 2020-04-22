@@ -8,15 +8,11 @@ export const roleHarvester = {
     }
 
     if (creep.memory.working === true) {
-      const container = creep.pos.findClosestByPath<StructureStorage>(FIND_STRUCTURES, {
-        filter: {
-          structureType: STRUCTURE_STORAGE
-        }
-      });
+      const storage = creep.room.storage;
 
-      if (container) {
-        if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(container)
+      if (storage) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       }
     } else {

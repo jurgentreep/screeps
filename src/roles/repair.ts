@@ -26,13 +26,11 @@ export const roleRepair = {
       }
     }
     else {
-      const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => s.structureType == STRUCTURE_STORAGE && s.store.getUsedCapacity() > 0
-      });
+      const storage = creep.room.storage;
 
-      if (container) {
-        if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(container)
+      if (storage) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       }
     }

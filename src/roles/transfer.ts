@@ -1,5 +1,5 @@
 export const roleTransfer = {
-  run: function (creep: Creep, room: Room) {
+  run: function (creep: Creep) {
     if (!creep.memory.working && creep.store.getUsedCapacity() === 0) {
       creep.memory.working = true;
     }
@@ -8,7 +8,7 @@ export const roleTransfer = {
     }
 
     if (creep.memory.working === true) {
-      const links = room.find(FIND_STRUCTURES, {
+      const links = creep.room.find(FIND_STRUCTURES, {
         filter: {
           structureType: STRUCTURE_LINK
         },
@@ -18,8 +18,8 @@ export const roleTransfer = {
         creep.moveTo(links[1])
       }
     } else {
-      if (room.storage && creep.transfer(room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(room.storage);
+      if (creep.room.storage && creep.transfer(creep.room.storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(creep.room.storage);
       }
     }
   }
