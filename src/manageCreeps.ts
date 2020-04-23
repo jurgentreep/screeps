@@ -3,10 +3,14 @@ import { roleUpgrader } from "roles/upgrader";
 import { roleSpecial } from "roles/special";
 import { roleRepair } from "roles/repair";
 import { roleTransfer } from "roles/transfer";
+import { roleColonizer } from "roles/colonizer";
+import { roleFounder } from "roles/founder";
+import { roleDefender } from "roles/defender";
+import { roleSettler } from "roles/settler";
 
 export const configureCreep = (role: string, energyAvailable: number) => {
   // Upgraders
-  let bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+  let bodyParts: BodyPartConstant[] = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
   if (role === 'transfer') {
     bodyParts = [MOVE, CARRY];
@@ -28,6 +32,14 @@ export const configureCreep = (role: string, energyAvailable: number) => {
     bodyParts = [WORK, CARRY, MOVE, MOVE];
   }
 
+  if (role === 'colonizer') {
+    bodyParts = [MOVE, CLAIM];
+  }
+
+  if (role === 'defender') {
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK];
+  }
+
   return bodyParts;
 }
 
@@ -45,49 +57,81 @@ const spawnCreep = (role: string, room: Room, spawn: StructureSpawn) => {
 }
 
 export const manageCreeps = (room: Room, spawn: StructureSpawn) => {
-  const initialRoles = [
-    {
-      role: 'transfer',
-      minimum: 1,
-      runner: roleTransfer
-    },
-    {
-      role: 'harvester',
-      minimum: 1,
-      runner: roleHarvester
-    },
-    {
-      role: 'special',
-      minimum: 1,
-      runner: roleSpecial
-    },
-    {
-      role: 'repair',
-      minimum: 1,
-      runner: roleRepair
-    },
-    {
-      role: 'upgrader',
-      minimum: 3,
-      runner: roleUpgrader
-    },
-  ];
+  if (spawn.name === 'Spawn1') {
+    const initialRoles = [
+      {
+        role: 'transfer',
+        minimum: 1,
+        runner: roleTransfer
+      },
+      {
+        role: 'harvester',
+        minimum: 1,
+        runner: roleHarvester
+      },
+      {
+        role: 'special',
+        minimum: 1,
+        runner: roleSpecial
+      },
+      {
+        role: 'repair',
+        minimum: 1,
+        runner: roleRepair
+      },
+      {
+        role: 'upgrader',
+        minimum: 3,
+        runner: roleUpgrader
+      },
+      {
+        role: 'colonizer',
+        minimum: 0,
+        runner: roleColonizer
+      },
+      {
+        role: 'founder',
+        minimum: 3,
+        runner: roleFounder
+      },
+      {
+        role: 'defender',
+        minimum: 1,
+        runner: roleDefender
+      }
+    ];
 
-  const roles = initialRoles.map(({ role, ...rest }) => ({
-    ...rest,
-    role,
-    creeps: _.filter(Game.creeps, (creep) => creep.memory.role === role)
-  }));
+    const roles = initialRoles.map(({ role, ...rest }) => ({
+      ...rest,
+      role,
+      creeps: _.filter(Game.creeps, (creep) => creep.memory.role === role)
+    }));
 
-  roles.forEach(({ role, minimum, runner, creeps }) => {
-    if (creeps.length < minimum) {
-      spawnCreep(role, room, spawn);
-    }
+    roles.forEach(({ role, minimum, runner, creeps }) => {
+      if (creeps.length < minimum) {
+        spawnCreep(role, room, spawn);
+      }
 
-    creeps.forEach((creep) => {
-      runner(creep);
+      creeps.forEach((creep) => {
+        runner(creep);
+      });
     });
-  });
+  } else if (spawn.name === 'Spawn2') {
+    // manage creeps of Spawn2
+    const newName = 'settler' + Game.time;
+
+    spawn.spawnCreep([MOVE, WORK, CARRY], newName, {
+      memory: {
+        role: 'settler',
+        working: false,
+      },
+      directions: [BOTTOM],
+    });
+
+    const creeps = _.filter(Game.creeps, (creep) => creep.memory.role === 'settler');
+
+    creeps.forEach(creep => roleSettler(creep));
+  }
 
   if (spawn.spawning) {
     var spawningCreep = Game.creeps[spawn.spawning.name];
