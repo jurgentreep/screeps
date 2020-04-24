@@ -7,6 +7,7 @@ import { roleColonizer } from "roles/colonizer";
 import { roleFounder } from "roles/founder";
 import { roleDefender } from "roles/defender";
 import { roleSettler } from "roles/settler";
+import { roleMegaHauler } from "roles/megaHauler";
 
 export const configureCreep = (role: string, energyAvailable: number) => {
   // Upgraders
@@ -98,6 +99,11 @@ export const manageCreeps = (room: Room, spawn: StructureSpawn) => {
         role: 'defender',
         minimum: 1,
         runner: roleDefender
+      },
+      {
+        role: 'megaHauler',
+        minimum: 3,
+        runner: roleMegaHauler
       }
     ];
 

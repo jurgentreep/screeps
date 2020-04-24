@@ -19,19 +19,34 @@ export const roleFounder = (creep: Creep) => {
         }
       }
     } else {
-      const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
+      const damagedStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (
+            (structure.structureType == STRUCTURE_ROAD || structure.structureType == STRUCTURE_CONTAINER) &&
+            structure.hits < structure.hitsMax
+          );
+        }
+      });
 
-      if (structures[0]) {
-        if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(structures[0]);
+      if (damagedStructures) {
+        if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff' } });
         }
       } else {
-        if (creep.room.controller) {
-          if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller);
+        const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
+
+        if (structures[0]) {
+          if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(structures[0]);
           }
         } else {
-          console.log(`No controller in room ${creep.room.name}`);
+          if (creep.room.controller) {
+            if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(creep.room.controller);
+            }
+          } else {
+            console.log(`No controller in room ${creep.room.name}`);
+          }
         }
       }
     }

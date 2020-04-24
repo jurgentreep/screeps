@@ -8,11 +8,19 @@ export const roleSettler = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const source = creep.pos.findClosestByPath(FIND_SOURCES);
+    const droppedResources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
 
-    if (source) {
-      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(source);
+    if (droppedResources) {
+      if (creep.pickup(droppedResources) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedResources);
+      }
+    } else {
+      const source = creep.pos.findClosestByPath(FIND_SOURCES);
+
+      if (source) {
+        if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(source);
+        }
       }
     }
   } else {
