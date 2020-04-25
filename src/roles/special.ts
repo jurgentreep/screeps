@@ -1,4 +1,4 @@
-export const roleSpecial = (creep: Creep) => {
+export const roleSpecial = (creep: Creep, job: SpecialJob) => {
   if (!creep.memory.working && creep.store.getUsedCapacity() === 0) {
     creep.memory.working = true;
   }
@@ -8,26 +8,38 @@ export const roleSpecial = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const containers = creep.room.find<StructureContainer>(FIND_STRUCTURES, {
-      filter: s => s.structureType == STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 100
-    });
+    const container = Game.getObjectById(job.containerId);
 
-    if (containers[0]) {
-      if (creep.withdraw(containers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(containers[0]);
+    if (job.linkId && container && container.store.getUsedCapacity() >= 100) {
+      if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(container);
       }
     } else {
-      const sources = creep.room.find(FIND_SOURCES);
+      const source = Game.getObjectById(job.sourceId);
 
-      if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[1]);
+      if (source) {
+        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(source);
+        }
       }
     }
   } else {
-    const links = creep.room.find<StructureLink>(FIND_STRUCTURES, {
-      filter: s => s.structureType == STRUCTURE_LINK
-    });
+    if (job.linkId) {
+      const link = Game.getObjectById(job.linkId);
 
-    creep.transfer(links[0], RESOURCE_ENERGY);
+      if (link) {
+        creep.transfer(link, RESOURCE_ENERGY);
+      }
+    } else {
+      const container = Game.getObjectById(job.containerId);
+
+      if (container) {
+        if (creep.pos.isEqualTo(container.pos)) {
+          creep.drop(RESOURCE_ENERGY);
+        } else {
+          creep.moveTo(container);
+        }
+      }
+    }
   }
 };

@@ -16,21 +16,31 @@ export const roleHarvester = (creep: Creep) => {
       }
     }
   } else {
-    const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (structure.structureType == STRUCTURE_EXTENSION ||
-          structure.structureType == STRUCTURE_SPAWN ||
-          structure.structureType == STRUCTURE_TOWER) &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-      }
+    const spawns = creep.room.find<StructureSpawn>(FIND_STRUCTURES, {
+      filter: (structure) => structure.structureType === STRUCTURE_SPAWN &&
+        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     });
 
-    if (energyContainer) {
-      if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff' } });
+    if (spawns[0]) {
+      if (creep.transfer(spawns[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: '#ffffff' } });
       }
     } else {
-      creep.moveTo(9, 35);
+      const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (structure.structureType == STRUCTURE_EXTENSION ||
+            structure.structureType == STRUCTURE_TOWER) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+        }
+      });
+
+      if (energyContainer) {
+        if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff' } });
+        }
+      } else {
+        creep.moveTo(9, 35);
+      }
     }
   }
 };

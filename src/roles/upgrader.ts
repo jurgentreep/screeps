@@ -14,10 +14,22 @@ export const roleUpgrader = (creep: Creep) => {
       }
     }
   } else {
-    const sources = creep.room.find(FIND_SOURCES);
+    const linkId = '5ea446a16586591e643f21f1' as Id<StructureLink>;
+    const link = Game.getObjectById(linkId);
 
-    if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(sources[0]);
+    if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+      if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(link);
+      }
+    } else {
+      const containerId = '5ea44320fc04d6d37a191992' as Id<StructureContainer>;
+      const container = Game.getObjectById(containerId);
+
+      if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container);
+        }
+      }
     }
   }
 };

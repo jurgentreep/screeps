@@ -17,6 +17,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
     const spawn = Game.spawns[spawnName];
     const room = spawn.room;
 
+    // if (room.name === 'E12N45') {
+    //   if (Game.time % 10 === 0) {
+    //     console.log(spawn.room.controller?.progress + '/' + spawn.room.controller?.progressTotal);
+    //   }
+    // }
+
     if (room.controller) {
       room.controller.activateSafeMode();
 
@@ -24,7 +30,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
       transferEnergy(room);
 
-      manageCreeps(room, spawn);
+      manageCreeps(spawn);
     }
   }
 });

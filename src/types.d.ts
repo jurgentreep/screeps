@@ -10,6 +10,13 @@ declare global {
   interface CreepMemory {
     role: string;
     working: boolean;
+    jobIndex?: number;
+  }
+
+  interface SpecialJob {
+    sourceId: Id<Source>
+    linkId?: Id<StructureLink>
+    containerId: Id<StructureContainer>
   }
 }
 
