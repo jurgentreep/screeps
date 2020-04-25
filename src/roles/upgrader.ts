@@ -14,20 +14,20 @@ export const roleUpgrader = (creep: Creep) => {
       }
     }
   } else {
-    const linkId = '5ea446a16586591e643f21f1' as Id<StructureLink>;
-    const link = Game.getObjectById(linkId);
+    const containerId = '5ea44320fc04d6d37a191992' as Id<StructureContainer>;
+    const container = Game.getObjectById(containerId);
 
-    if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
-      if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(link);
+    if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+      if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(container);
       }
     } else {
-      const containerId = '5ea44320fc04d6d37a191992' as Id<StructureContainer>;
-      const container = Game.getObjectById(containerId);
+      const linkId = '5ea446a16586591e643f21f1' as Id<StructureLink>;
+      const link = Game.getObjectById(linkId);
 
-      if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
-        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(container);
+      if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+        if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(link);
         }
       }
     }

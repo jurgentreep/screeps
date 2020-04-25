@@ -110,7 +110,7 @@ const getRoles = (spawnName: string) => {
       },
       {
         role: 'upgrader',
-        minimum: 3,
+        minimum: 5,
         runner: roleUpgrader,
         jobs: []
       },
