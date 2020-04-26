@@ -2,7 +2,8 @@ export const roleDefender = (creep: Creep) => {
   const roomName = 'E11N45';
 
   if (creep.room.name === roomName) {
-    const hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+    let hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+    hostiles = _.sortBy(hostiles, (hostile) => hostile.body.map(part => part.type).includes(HEAL));
 
     if (hostiles.length) {
       const result = creep.attack(hostiles[0]);

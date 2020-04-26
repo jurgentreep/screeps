@@ -120,7 +120,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'upgrader',
-        minimum: 4,
+        minimum: 3,
         runner: roleUpgrader,
         jobs: [
           {
@@ -172,6 +172,16 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     ];
   } else if (spawnName === 'Spawn2') {
     return [
+      // {
+      //   role: 'transfer',
+      //   minimum: 1,
+      //   runner: roleTransfer,
+      //   jobs: [
+      //     {
+      //       linkId: '5ea5f555ae67a29d4d08f25a' as Id<StructureLink>
+      //     }
+      //   ]
+      // },
       {
         role: 'settler',
         minimum: 7,
@@ -223,6 +233,18 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           },
         ]
       },
+      // {
+      //   role: 'special',
+      //   minimum: 1,
+      //   runner: roleSpecial,
+      //   jobs: [
+      //     {
+      //       sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+      //       linkId: '5ea5ff1790352e1caf2ddd5b' as Id<StructureLink>,
+      //       containerId: '5ea60434454e1c1dd40aa457' as Id<StructureContainer>
+      //     },
+      //   ]
+      // }
     ]
   } else {
     console.error('Unexpected spawnName');
@@ -232,6 +254,8 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
 
 export const manageCreeps = (spawn: StructureSpawn) => {
   const initialRoles = getRoles(spawn);
+
+  console.log(initialRoles.map(role => role.role));
 
   const roles = initialRoles.map(({ role, ...rest }) => ({
     ...rest,
