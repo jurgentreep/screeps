@@ -1,4 +1,4 @@
-export const roleTransfer = (creep: Creep) => {
+export const roleTransfer = (creep: Creep, job: TransferJob) => {
   if (!creep.memory.working && creep.store.getUsedCapacity() === 0) {
     creep.memory.working = true;
   }
@@ -8,14 +8,12 @@ export const roleTransfer = (creep: Creep) => {
   }
 
   if (creep.memory.working === true) {
-    const links = creep.room.find<StructureLink>(FIND_STRUCTURES, {
-      filter: {
-        structureType: STRUCTURE_LINK
-      },
-    });
+    const link = Game.getObjectById(job.linkId);
 
-    if (creep.withdraw(links[1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(links[1])
+    if (link) {
+      if (creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(link)
+      }
     }
   } else {
     if (creep.room.storage) {

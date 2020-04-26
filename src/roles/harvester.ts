@@ -1,4 +1,4 @@
-export const roleHarvester = (creep: Creep) => {
+export const roleHarvester = (creep: Creep, job: HarvesterJob) => {
   if (!creep.memory.working && creep.store.getUsedCapacity() === 0) {
     creep.memory.working = true;
   }
@@ -16,14 +16,9 @@ export const roleHarvester = (creep: Creep) => {
       }
     }
   } else {
-    const spawns = creep.room.find<StructureSpawn>(FIND_STRUCTURES, {
-      filter: (structure) => structure.structureType === STRUCTURE_SPAWN &&
-        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-    });
-
-    if (spawns[0]) {
-      if (creep.transfer(spawns[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: '#ffffff' } });
+    if (job.spawn) {
+      if (creep.transfer(job.spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(job.spawn, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
       }
     } else {
       const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -36,10 +31,10 @@ export const roleHarvester = (creep: Creep) => {
 
       if (energyContainer) {
         if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff' } });
+          creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        creep.moveTo(9, 35);
+        creep.moveTo(9, 35, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
       }
     }
   }

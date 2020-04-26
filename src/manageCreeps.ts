@@ -71,20 +71,30 @@ const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: 
   });
 }
 
-const getRoles = (spawnName: string): Role[] => {
+const getRoles = (spawn: StructureSpawn): Role[] => {
+  const spawnName = spawn.name;
+
   if (spawnName === 'Spawn1') {
     return [
       {
         role: 'transfer',
         minimum: 1,
         runner: roleTransfer,
-        jobs: []
+        jobs: [
+          {
+            linkId: '5e9f1ef4b23f556e388f4cc0' as Id<StructureLink>
+          }
+        ]
       },
       {
         role: 'harvester',
         minimum: 1,
         runner: roleHarvester,
-        jobs: []
+        jobs: [
+          {
+            spawn
+          }
+        ]
       },
       {
         role: 'special',
@@ -176,7 +186,7 @@ const getRoles = (spawnName: string): Role[] => {
 }
 
 export const manageCreeps = (spawn: StructureSpawn) => {
-  const initialRoles = getRoles(spawn.name);
+  const initialRoles = getRoles(spawn);
 
   const roles = initialRoles.map(({ role, ...rest }) => ({
     ...rest,

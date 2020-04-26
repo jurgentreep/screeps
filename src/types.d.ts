@@ -24,7 +24,15 @@ declare global {
     containerId: Id<StructureContainer>
   }
 
-  type Job = SpecialJob | UpgradeJob;
+  interface TransferJob {
+    linkId: Id<StructureLink>
+  }
+
+  interface HarvesterJob {
+    spawn: StructureSpawn
+  }
+
+  type Job = SpecialJob | UpgradeJob | TransferJob | HarvesterJob;
 
   type Role = {
     role: 'special'
@@ -37,9 +45,17 @@ declare global {
     runner: (creep: Creep, job: UpgradeJob) => void
     jobs: UpgradeJob[]
   } | {
-    role: 'transfer' |
-    'harvester' |
-    'repair' |
+    role: 'transfer'
+    minimum: number
+    runner: (creep: Creep, job: TransferJob) => void
+    jobs: TransferJob[]
+  } | {
+    role: 'harvester'
+    minimum: number
+    runner: (creep: Creep, job: HarvesterJob) => void
+    jobs: HarvesterJob[]
+  } | {
+    role: 'repair' |
     'colonizer' |
     'founder' |
     'defender' |
