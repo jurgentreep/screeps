@@ -32,7 +32,12 @@ declare global {
     spawn: StructureSpawn
   }
 
-  type Job = SpecialJob | UpgradeJob | TransferJob | HarvesterJob;
+  interface SettlerJob {
+    sourceId: Id<Source>
+    spawn: StructureSpawn
+  }
+
+  type Job = SpecialJob | UpgradeJob | TransferJob | HarvesterJob | SettlerJob;
 
   type Role = {
     role: 'special'
@@ -55,12 +60,16 @@ declare global {
     runner: (creep: Creep, job: HarvesterJob) => void
     jobs: HarvesterJob[]
   } | {
+    role: 'settler'
+    minimum: number
+    runner: (creep: Creep, job: SettlerJob) => void
+    jobs: SettlerJob[]
+  } | {
     role: 'repair' |
     'colonizer' |
     'founder' |
     'defender' |
-    'megaHauler' |
-    'settler'
+    'megaHauler'
     minimum: number
     runner: (creep: Creep) => void
     jobs: any[]

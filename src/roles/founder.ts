@@ -15,7 +15,7 @@ export const roleFounder = (creep: Creep) => {
 
       if (source) {
         if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(source);
+          creep.moveTo(source, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       }
     } else {
@@ -30,19 +30,19 @@ export const roleFounder = (creep: Creep) => {
 
       if (damagedStructures) {
         if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff' } });
+          creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
         const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
 
         if (structures[0]) {
           if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(structures[0]);
+            creep.moveTo(structures[0], { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
           }
         } else {
           if (creep.room.controller) {
             if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-              creep.moveTo(creep.room.controller);
+              creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
             }
           } else {
             console.log(`No controller in room ${creep.room.name}`);
@@ -51,6 +51,6 @@ export const roleFounder = (creep: Creep) => {
       }
     }
   } else {
-    creep.moveTo(new RoomPosition(25, 25, roomName), { visualizePathStyle: { stroke: '#00ffff' } });
+    creep.moveTo(new RoomPosition(25, 25, roomName), { visualizePathStyle: { stroke: '#00ffff', lineStyle: 'solid' } });
   }
 }

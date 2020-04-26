@@ -174,9 +174,54 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 10,
+        minimum: 7,
         runner: roleSettler,
-        jobs: []
+        jobs: [
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+          {
+            spawn,
+            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
+          },
+        ]
       },
     ]
   } else {
