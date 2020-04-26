@@ -48,14 +48,14 @@ export const configureCreep = (role: string, energyAvailable: number) => {
   return bodyParts;
 }
 
-const getJobIndex = (creeps: Creep[], jobs: SpecialJob[]) => {
+const getJobIndex = (creeps: Creep[], jobs: Job[]) => {
   const jobIndexes = jobs.map((value, index) => index);
   const takenJobs = creeps.map(creep => creep.memory.jobIndex);
   const availableJobs = jobIndexes.filter(jobIndex => !takenJobs.includes(jobIndex));
   return availableJobs[0];
 }
 
-const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: SpecialJob[]) => {
+const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: Job[]) => {
   const energyAvailable = spawn.room.energyAvailable;
   const bodyParts = configureCreep(role, energyAvailable);
   const newName = role + Game.time;
@@ -71,7 +71,7 @@ const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: 
   });
 }
 
-const getRoles = (spawnName: string) => {
+const getRoles = (spawnName: string): Role[] => {
   if (spawnName === 'Spawn1') {
     return [
       {
@@ -110,9 +110,30 @@ const getRoles = (spawnName: string) => {
       },
       {
         role: 'upgrader',
-        minimum: 5,
+        minimum: 4,
         runner: roleUpgrader,
-        jobs: []
+        jobs: [
+          {
+            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
+            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
+          },
+          {
+            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
+            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
+          },
+          {
+            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
+            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
+          },
+          {
+            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
+            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
+          },
+          {
+            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
+            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
+          },
+        ]
       },
       {
         role: 'colonizer',
@@ -168,11 +189,12 @@ export const manageCreeps = (spawn: StructureSpawn) => {
       spawnCreep(role, spawn, creeps, jobs);
     }
 
-    creeps.forEach((creep) => {
-      if (creep.memory.jobIndex) {
+    creeps.forEach((creep, index) => {
+      if (creep.memory.jobIndex !== undefined) {
         runner(creep, jobs[creep.memory.jobIndex]);
       } else {
-        runner(creep, jobs[0]);
+        // fallback until everything has a job
+        runner(creep, jobs[index]);
       }
     });
   });

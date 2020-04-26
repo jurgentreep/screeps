@@ -1,4 +1,4 @@
-export const roleUpgrader = (creep: Creep) => {
+export const roleUpgrader = (creep: Creep, job: UpgradeJob) => {
   if (creep.memory.working && creep.store.getUsedCapacity() == 0) {
     creep.memory.working = false;
   }
@@ -14,16 +14,14 @@ export const roleUpgrader = (creep: Creep) => {
       }
     }
   } else {
-    const containerId = '5ea44320fc04d6d37a191992' as Id<StructureContainer>;
-    const container = Game.getObjectById(containerId);
+    const container = Game.getObjectById(job.containerId);
 
     if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
       if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(container);
       }
     } else {
-      const linkId = '5ea446a16586591e643f21f1' as Id<StructureLink>;
-      const link = Game.getObjectById(linkId);
+      const link = Game.getObjectById(job.linkId);
 
       if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
         if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {

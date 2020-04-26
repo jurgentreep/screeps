@@ -18,6 +18,37 @@ declare global {
     linkId?: Id<StructureLink>
     containerId: Id<StructureContainer>
   }
+
+  interface UpgradeJob {
+    linkId: Id<StructureLink>
+    containerId: Id<StructureContainer>
+  }
+
+  type Job = SpecialJob | UpgradeJob;
+
+  type Role = {
+    role: 'special'
+    minimum: number
+    runner: (creep: Creep, job: SpecialJob) => void
+    jobs: SpecialJob[]
+  } | {
+    role: 'upgrader'
+    minimum: number
+    runner: (creep: Creep, job: UpgradeJob) => void
+    jobs: UpgradeJob[]
+  } | {
+    role: 'transfer' |
+    'harvester' |
+    'repair' |
+    'colonizer' |
+    'founder' |
+    'defender' |
+    'megaHauler' |
+    'settler'
+    minimum: number
+    runner: (creep: Creep) => void
+    jobs: any[]
+  }
 }
 
 interface Memory {
