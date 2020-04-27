@@ -36,7 +36,7 @@ export const roleRepair = (creep: Creep) => {
   else {
     const storage = creep.room.storage;
 
-    if (storage) {
+    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 5000) {
       if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(storage)
       }
