@@ -15,18 +15,18 @@ export const roleSettler = (creep: Creep, job: SettlerJob) => {
         creep.moveTo(droppedResources);
       }
     } else {
-      const source = Game.getObjectById(job.sourceId);
+      const storage = creep.room.storage;
 
-      if (source) {
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source);
+      if (storage) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       }
     }
   } else {
     if (job.spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
       if (creep.transfer(job.spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(job.spawn, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+        creep.moveTo(job.spawn, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid', strokeWidth: 0.05 } });
       }
     } else {
       const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {

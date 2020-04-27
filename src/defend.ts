@@ -9,7 +9,7 @@ const getTowers = (room: Room) => room.find<StructureTower>(
 
 export const defend = (room: Room) => {
   let hostiles = room.find(FIND_HOSTILE_CREEPS);
-  hostiles = _.sortBy(hostiles, (hostile) => hostile.body.map(part => part.type).includes(HEAL));
+  hostiles.sort((a, b) => b.getActiveBodyparts(HEAL) - a.getActiveBodyparts(HEAL));
   const towers = getTowers(room);
   const hurtCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax);
 

@@ -14,18 +14,28 @@ export const roleUpgrader = (creep: Creep, job: UpgradeJob) => {
       }
     }
   } else {
-    const container = Game.getObjectById(job.containerId);
+    if (job.containerId && job.linkId) {
+      const container = Game.getObjectById(job.containerId);
 
-    if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
-      if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(container);
+      if (container && container.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container);
+        }
+      } else {
+        const link = Game.getObjectById(job.linkId);
+
+        if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
+          if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(link);
+          }
+        }
       }
     } else {
-      const link = Game.getObjectById(job.linkId);
+      const storage = creep.room.storage;
 
-      if (link && link.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) {
-        if (creep.withdraw(link, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(link);
+      if (storage) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       }
     }

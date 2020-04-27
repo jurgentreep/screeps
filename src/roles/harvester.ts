@@ -34,7 +34,7 @@ export const roleHarvester = (creep: Creep, job: HarvesterJob) => {
           creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        creep.moveTo(9, 35, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+        creep.moveTo(job.spawn, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
       }
     }
   }

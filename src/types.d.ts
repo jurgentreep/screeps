@@ -11,6 +11,7 @@ declare global {
     role: string;
     working: boolean;
     jobIndex?: number;
+    room: string;
   }
 
   interface SpecialJob {
@@ -20,8 +21,8 @@ declare global {
   }
 
   interface UpgradeJob {
-    linkId: Id<StructureLink>
-    containerId: Id<StructureContainer>
+    linkId?: Id<StructureLink>
+    containerId?: Id<StructureContainer>
   }
 
   interface TransferJob {

@@ -22,7 +22,15 @@ export const roleRepair = (creep: Creep) => {
         creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff' } });
       }
     } else {
-      creep.moveTo(9, 35);
+      const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
+
+      if (structures[0]) {
+        if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(structures[0], { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+        }
+      } else {
+        creep.moveTo(9, 35);
+      }
     }
   }
   else {
