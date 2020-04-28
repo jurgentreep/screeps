@@ -29,7 +29,7 @@ export const roleRepair = (creep: Creep) => {
           creep.moveTo(structures[0], { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        creep.moveTo(9, 35);
+        creep.moveTo(25, 25);
       }
     }
   }

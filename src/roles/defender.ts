@@ -5,7 +5,7 @@ export const roleDefender = (creep: Creep) => {
     const result = creep.attack(hostile);
 
     if (result === ERR_NOT_IN_RANGE) {
-      creep.moveTo(hostile);
+      creep.moveTo(hostile, { visualizePathStyle: { stroke: '#ff0000', lineStyle: 'solid' } });
     }
   } else {
     creep.moveTo(25, 25);
