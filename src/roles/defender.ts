@@ -1,5 +1,5 @@
 export const roleDefender = (creep: Creep) => {
-  let hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+  const hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
   if (hostile) {
     const result = creep.attack(hostile);
@@ -8,8 +8,6 @@ export const roleDefender = (creep: Creep) => {
       creep.moveTo(hostile);
     }
   } else {
-    if (creep.room.controller) {
-      creep.moveTo(creep.room.controller);
-    }
+    creep.moveTo(25, 25);
   }
 }
