@@ -8,6 +8,8 @@ import { roleFounder } from "roles/founder";
 import { roleDefender } from "roles/defender";
 import { roleSettler } from "roles/settler";
 import { roleMegaHauler } from "roles/megaHauler";
+import { roleSuicide } from "roles/suicide";
+import { roleDestroyer } from "roles/destroyer";
 
 export const configureCreep = (role: string, energyAvailable: number) => {
   // Upgraders
@@ -34,7 +36,7 @@ export const configureCreep = (role: string, energyAvailable: number) => {
   }
 
   if (role === 'colonizer') {
-    bodyParts = [MOVE, CLAIM];
+    bodyParts = [MOVE, MOVE, CLAIM, CLAIM];
   }
 
   if (role === 'defender') {
@@ -43,6 +45,14 @@ export const configureCreep = (role: string, energyAvailable: number) => {
 
   if (role === 'settler') {
     bodyParts = [MOVE, WORK, CARRY];
+  }
+
+  if (role === 'suicide') {
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+  }
+
+  if (role === 'destroyer') {
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK];
   }
 
   return bodyParts;
@@ -169,7 +179,19 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: 0,
         runner: roleMegaHauler,
         jobs: []
-      }
+      },
+      {
+        role: 'suicide',
+        minimum: 0,
+        runner: roleSuicide,
+        jobs: []
+      },
+      {
+        role: 'destroyer',
+        minimum: 0,
+        runner: roleDestroyer,
+        jobs: []
+      },
     ];
   } else if (spawnName === 'Spawn2') {
     return [
@@ -264,7 +286,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'upgrader',
-        minimum: 2,
+        minimum: 1,
         runner: roleUpgrader,
         jobs: [
           {},
