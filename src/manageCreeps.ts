@@ -9,6 +9,7 @@ import { roleDefender } from "roles/defender";
 import { roleSettler } from "roles/settler";
 import { roleSuicide } from "roles/suicide";
 import { roleDestroyer } from "roles/destroyer";
+import { roleRemoteMiner } from "roles/remoteMiner";
 
 export const configureCreep = (role: string, energyAvailable: number) => {
   // Upgraders
@@ -39,7 +40,7 @@ export const configureCreep = (role: string, energyAvailable: number) => {
   }
 
   if (role === 'defender') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK];
   }
 
   if (role === 'settler') {
@@ -77,7 +78,7 @@ const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: 
       jobIndex,
       room: spawn.room.name,
     },
-    // directions: [BOTTOM],
+    directions: [BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT],
   });
 }
 
@@ -86,6 +87,12 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
 
   if (spawnName === 'Spawn1') {
     return [
+      {
+        role: 'defender',
+        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length > 0 ? 1 : 0,
+        runner: roleDefender,
+        jobs: []
+      },
       {
         role: 'transfer',
         minimum: 1,
@@ -145,14 +152,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
             containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
           },
-          {
-            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
-            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
-          },
-          {
-            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
-            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
-          },
         ]
       },
       {
@@ -168,12 +167,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         jobs: []
       },
       {
-        role: 'defender',
-        minimum: 0,
-        runner: roleDefender,
-        jobs: []
-      },
-      {
         role: 'suicide',
         minimum: 0,
         runner: roleSuicide,
@@ -185,9 +178,21 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleDestroyer,
         jobs: []
       },
+      {
+        role: 'remoteMiner',
+        minimum: 1,
+        runner: roleRemoteMiner,
+        jobs: []
+      },
     ];
   } else if (spawnName === 'Spawn2') {
     return [
+      {
+        role: 'defender',
+        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length > 0 ? 1 : 0,
+        runner: roleDefender,
+        jobs: []
+      },
       {
         role: 'transfer',
         minimum: 1,
@@ -213,46 +218,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: 0,
         runner: roleSettler,
         jobs: [
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
           {
             spawn,
             sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,

@@ -72,7 +72,8 @@ declare global {
     'defender' |
     'megaHauler' |
     'suicide' |
-    'destroyer'
+    'destroyer' |
+    'remoteMiner'
     minimum: number
     runner: (creep: Creep) => void
     jobs: any[]
