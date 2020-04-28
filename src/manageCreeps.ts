@@ -7,7 +7,6 @@ import { roleColonizer } from "roles/colonizer";
 import { roleFounder } from "roles/founder";
 import { roleDefender } from "roles/defender";
 import { roleSettler } from "roles/settler";
-import { roleMegaHauler } from "roles/megaHauler";
 import { roleSuicide } from "roles/suicide";
 import { roleDestroyer } from "roles/destroyer";
 
@@ -172,12 +171,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'defender',
         minimum: 0,
         runner: roleDefender,
-        jobs: []
-      },
-      {
-        role: 'megaHauler',
-        minimum: 0,
-        runner: roleMegaHauler,
         jobs: []
       },
       {
