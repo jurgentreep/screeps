@@ -10,6 +10,7 @@ import { roleSettler } from "roles/settler";
 import { roleSuicide } from "roles/suicide";
 import { roleDestroyer } from "roles/destroyer";
 import { roleRemoteMiner } from "roles/remoteMiner";
+import { roleBuilder } from "roles/builder";
 
 export const configureCreep = (role: string, energyAvailable: number) => {
   // Upgraders
@@ -89,7 +90,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'defender',
-        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length > 0 ? 1 : 0,
+        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length >= 2 ? 1 : 0,
         runner: roleDefender,
         jobs: []
       },
@@ -125,6 +126,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           },
           {
             sourceId: '5bbcad9c9099fc012e63782b' as Id<Source>,
+            linkId: '5ea9a0a9f8dd917b6c103481' as Id<StructureLink>,
             containerId: '5ea44320fc04d6d37a191992' as Id<StructureContainer>
           }
         ]
@@ -137,7 +139,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'upgrader',
-        minimum: 3,
+        minimum: 0,
         runner: roleUpgrader,
         jobs: [
           {
@@ -180,8 +182,15 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'remoteMiner',
-        minimum: 1,
+        minimum: 2,
         runner: roleRemoteMiner,
+        jobs: []
+      },
+      {
+        role: 'builder',
+        // minimum: spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ? 2 : 0,
+        minimum: 2,
+        runner: roleBuilder,
         jobs: []
       },
     ];
@@ -189,7 +198,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'defender',
-        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length > 0 ? 1 : 0,
+        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length >= 2 ? 1 : 0,
         runner: roleDefender,
         jobs: []
       },
@@ -253,6 +262,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           {},
           {},
         ]
+      },
+      {
+        role: 'builder',
+        // minimum: spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ? 2 : 0,
+        minimum: 2,
+        runner: roleBuilder,
+        jobs: []
       },
     ]
   } else {

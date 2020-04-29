@@ -11,6 +11,9 @@ export const defend = (room: Room) => {
   const towers = getTowers(room);
   const hostile = towers[0].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
   const hurtCreeps = _.filter(Game.creeps, (creep) => creep.hits < creep.hitsMax);
+  const damagedStructure = room.find(FIND_STRUCTURES, {
+    filter: s => s.structureType === STRUCTURE_RAMPART && s.hits < 12000
+  })[0];
 
   if (hostile) {
     const username = hostile.owner.username;
@@ -18,5 +21,7 @@ export const defend = (room: Room) => {
     towers.forEach(tower => tower.attack(hostile));
   } else if (hurtCreeps.length > 0) {
     towers.forEach(tower => tower.heal(hurtCreeps[0]));
+  } else if (damagedStructure) {
+    towers.forEach(tower => tower.repair(damagedStructure));
   }
 }

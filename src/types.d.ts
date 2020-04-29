@@ -70,10 +70,10 @@ declare global {
     'colonizer' |
     'founder' |
     'defender' |
-    'megaHauler' |
     'suicide' |
     'destroyer' |
-    'remoteMiner'
+    'remoteMiner' |
+    'builder'
     minimum: number
     runner: (creep: Creep) => void
     jobs: any[]

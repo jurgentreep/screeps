@@ -28,7 +28,7 @@ export const roleRemoteMiner = (creep: Creep) => {
       }
     } else {
       const damagedRoad = creep.pos.findInRange(FIND_STRUCTURES, 1, {
-        filter: s => s.structureType === STRUCTURE_ROAD && s.hits < s.hitsMax
+        filter: s => s.structureType === STRUCTURE_ROAD && s.hits < (s.hitsMax - 300)
       })[0];
 
       if (damagedRoad && source && source.energy > 300 && creep.room.name === roomName) {
