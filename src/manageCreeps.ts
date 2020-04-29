@@ -90,7 +90,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'defender',
-        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length >= 2 ? 1 : 0,
+        minimum: 0,
         runner: roleDefender,
         jobs: []
       },
@@ -198,7 +198,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'defender',
-        minimum: spawn.room.find(FIND_HOSTILE_CREEPS).length >= 2 ? 1 : 0,
+        minimum: 0,
         runner: roleDefender,
         jobs: []
       },

@@ -17,7 +17,7 @@ export const roleBuilder = (creep: Creep) => {
     }
   } else {
     const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: s => (s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART) && s.hits < 10000
+      filter: s => (s.structureType === STRUCTURE_WALL) && s.hits < 20000
     });
 
     if (wall) {
@@ -32,9 +32,9 @@ export const roleBuilder = (creep: Creep) => {
           creep.moveTo(constructionSite, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        for (const nextHits of [60, 120, 180, 240, 300, 360]) {
+        for (const nextHits of [60, 120, 180, 240, 300, 360, 420, 480, 540, 600]) {
           const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART) && s.hits < (nextHits * 1000)
+            filter: s => (s.structureType === STRUCTURE_WALL) && s.hits < (nextHits * 1000)
           });
 
           if (wall) {
