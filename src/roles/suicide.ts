@@ -7,7 +7,7 @@ export const roleSuicide = (creep: Creep) => {
     creep.memory.working = false;
   }
 
-  const roomName = 'E12N46';
+  const roomName = 'E11N38';
 
   if (creep.memory.working && creep.room.name === roomName) {
     const droppedResources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
@@ -53,19 +53,36 @@ export const roleSuicide = (creep: Creep) => {
                 creep.moveTo(container);
               }
             } else {
-              creep.moveTo(24, 32)
+              const storage = creep.room.storage;
+
+              if (storage) {
+                if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                  creep.moveTo(storage);
+                }
+              } else {
+                creep.moveTo(25, 25)
+              }
             }
           }
         }
       }
     }
   } else if (!creep.memory.working) {
-    const storageId = '5e9ccaf157b80e5044153ec6' as Id<StructureStorage>;
+    const storageId = '5eaee91f24db4121a516fe40' as Id<StructureStorage>;
     const storage = Game.getObjectById(storageId);
 
     if (storage) {
       if (creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(storage);
+      }
+    } else {
+      const containerId = '5eada97eb221a4f052502452' as Id<StructureContainer>;
+      const container = Game.getObjectById(containerId);
+
+      if (container) {
+        if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container);
+        }
       }
     }
   } else {

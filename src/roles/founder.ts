@@ -7,76 +7,133 @@ export const roleFounder = (creep: Creep) => {
     creep.memory.working = false;
   }
 
-  const roomName = 'E11N45';
-
-  if (creep.room.name === roomName) {
+  if (Game.flags.colonize.room && creep.room.name === Game.flags.colonize.room.name) {
     if (creep.memory.working) {
-      const source = creep.pos.findClosestByPath(FIND_SOURCES);
+      const hostileStructureWithoutEnergy = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+        filter: s => (
+          s.structureType === STRUCTURE_EXTENSION ||
+          s.structureType === STRUCTURE_TOWER ||
+          s.structureType === STRUCTURE_SPAWN
+        ) && s.store && s.store.getUsedCapacity(RESOURCE_ENERGY) === 0
+      });
 
-      if (source) {
-        if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+      if (hostileStructureWithoutEnergy) {
+        if (creep.dismantle(hostileStructureWithoutEnergy) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(hostileStructureWithoutEnergy);
+        }
+      } else {
+        const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
+          filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+        });
+
+        if (ruin) {
+          if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(ruin);
+          }
+        } else {
+          const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
+          if (droppedResource) {
+            if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+              creep.moveTo(droppedResource);
+            }
+          } else {
+            const storage = creep.room.storage;
+
+            if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
+              if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(storage)
+              }
+            } else {
+              const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
+              });
+
+              if (container) {
+                if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                  creep.moveTo(container);
+                }
+              } else {
+                const hostileStructureWithEnergy = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                  filter: s => (
+                    s.structureType === STRUCTURE_EXTENSION ||
+                    s.structureType === STRUCTURE_TOWER ||
+                    s.structureType === STRUCTURE_SPAWN
+                  ) && s.store && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+                });
+
+                if (hostileStructureWithEnergy) {
+                  if (creep.withdraw(hostileStructureWithEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(hostileStructureWithEnergy);
+                  }
+                } else {
+                  const resource = creep.pos.findClosestByPath(FIND_SOURCES);
+
+                  if (resource) {
+                    if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
+                      creep.moveTo(resource);
+                    }
+                  } else {
+                    creep.moveTo(25, 25);
+                  }
+                }
+              }
+            }
+          }
         }
       }
     } else {
-      const damagedStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (
-            (structure.structureType == STRUCTURE_ROAD || structure.structureType == STRUCTURE_CONTAINER) &&
-            structure.hits < structure.hitsMax
-          );
-        }
-      });
+      // const spawn = creep.pos.findClosestByPath<StructureSpawn>(FIND_STRUCTURES, {
+      //   filter: s => s.structureType === STRUCTURE_SPAWN
+      // });
 
-      if (damagedStructures) {
-        if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+      // if (spawn && spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+      //   if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      //     creep.moveTo(spawn);
+      //   }
+      // } else {
+      //   const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      //     filter: (structure) => {
+      //       return (structure.structureType == STRUCTURE_EXTENSION ||
+      //         structure.structureType == STRUCTURE_TOWER) &&
+      //         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+      //     }
+      //   });
+
+      //   if (energyContainer) {
+      //     if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      //       creep.moveTo(energyContainer);
+      //     }
+      //   } else {
+      //     const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      //       filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getFreeCapacity() > 0
+      //     });
+
+      //     if (container) {
+      //       if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      //         creep.moveTo(container);
+      //       }
+      //     } else {
+      const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+
+      if (constructionSite) {
+        if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(constructionSite);
         }
       } else {
-        const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
-
-        if (structures[0]) {
-          if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(structures[0], { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+        if (creep.room.controller) {
+          if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.controller);
           }
         } else {
-          const spawn = creep.room.find<StructureSpawn>(FIND_STRUCTURES, {
-            filter: {
-              structureType: STRUCTURE_SPAWN
-            }
-          })[0];
-
-          if (spawn && spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-            if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
-            }
-          } else {
-            const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-              filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION ||
-                  structure.structureType == STRUCTURE_TOWER) &&
-                  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-              }
-            });
-
-            if (energyContainer) {
-              if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(energyContainer, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
-              }
-            } else {
-              if (creep.room.controller) {
-                if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-                  creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
-                }
-              } else {
-                console.log(`No controller in room ${creep.room.name}`);
-              }
-            }
-          }
+          console.log(`No controller in room ${creep.room.name}`);
         }
       }
     }
+    //     }
+    //   }
+    // }
   } else {
-    creep.moveTo(new RoomPosition(25, 25, roomName), { visualizePathStyle: { stroke: '#00ffff', lineStyle: 'solid' } });
+    creep.moveTo(Game.flags.colonize.pos, { visualizePathStyle: { stroke: '#00ffff' } });
   }
 }

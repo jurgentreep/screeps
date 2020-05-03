@@ -26,9 +26,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if (room.controller) {
       // room.controller.activateSafeMode();
 
-      defend(room);
+      // defend(room);
 
-      transferEnergy(room);
+      // transferEnergy(room);
 
       manageCreeps(spawn);
     }

@@ -1,4 +1,4 @@
-import { roleHarvester } from "roles/harvester";
+import { roleFiller } from "roles/filler";
 import { roleUpgrader } from "roles/upgrader";
 import { roleSpecial } from "roles/special";
 import { roleRepair } from "roles/repair";
@@ -11,8 +11,10 @@ import { roleSuicide } from "roles/suicide";
 import { roleDestroyer } from "roles/destroyer";
 import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleBuilder } from "roles/builder";
+import { roleScout } from "roles/scout";
+import { roleTransport } from "roles/transport";
 
-export const configureCreep = (role: string, energyAvailable: number) => {
+export const configureCreep = (role: string, energyAvailable: number, numberOfCreeps: number) => {
   // Upgraders
   let bodyParts: BodyPartConstant[] = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
@@ -20,12 +22,18 @@ export const configureCreep = (role: string, energyAvailable: number) => {
     bodyParts = [MOVE, CARRY];
   }
 
-  if (role === 'harvester') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+  if (role === 'filler') {
+    bodyParts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
 
-    if (energyAvailable < 600) {
-      bodyParts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
+    if (energyAvailable >= 600) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else if (energyAvailable >= 500) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
     }
+  }
+
+  if (role === 'transport') {
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   if (role === 'special') {
@@ -37,7 +45,7 @@ export const configureCreep = (role: string, energyAvailable: number) => {
   }
 
   if (role === 'colonizer') {
-    bodyParts = [MOVE, MOVE, CLAIM, CLAIM];
+    bodyParts = [MOVE, CLAIM];
   }
 
   if (role === 'defender') {
@@ -46,14 +54,25 @@ export const configureCreep = (role: string, energyAvailable: number) => {
 
   if (role === 'settler') {
     bodyParts = [MOVE, WORK, CARRY];
+    // if (numberOfCreeps >= 4) {
+    // bodyParts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+    // }
   }
 
   if (role === 'suicide') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   if (role === 'destroyer') {
     bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK];
+  }
+
+  if (role === 'scout') {
+    bodyParts = [MOVE];
+  }
+
+  if (role === 'upgrader') {
+    bodyParts = [MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
   }
 
   return bodyParts;
@@ -68,7 +87,7 @@ const getJobIndex = (creeps: Creep[], jobs: Job[]) => {
 
 const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: Job[]) => {
   const energyAvailable = spawn.room.energyAvailable;
-  const bodyParts = configureCreep(role, energyAvailable);
+  const bodyParts = configureCreep(role, energyAvailable, creeps.length);
   const newName = role + Game.time;
   const jobIndex = getJobIndex(creeps, jobs);
 
@@ -79,7 +98,7 @@ const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: 
       jobIndex,
       room: spawn.room.name,
     },
-    directions: [BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT],
+    // directions: [BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT],
   });
 }
 
@@ -89,6 +108,12 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   if (spawnName === 'Spawn1') {
     return [
       {
+        role: 'settler',
+        minimum: 0,
+        runner: roleSettler,
+        jobs: []
+      },
+      {
         role: 'defender',
         minimum: 0,
         runner: roleDefender,
@@ -96,7 +121,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'transfer',
-        minimum: 1,
+        minimum: 0,
         runner: roleTransfer,
         jobs: [
           {
@@ -105,13 +130,28 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         ]
       },
       {
-        role: 'harvester',
+        role: 'filler',
         minimum: 1,
-        runner: roleHarvester,
+        runner: roleFiller,
         jobs: [
           {
             spawn
-          }
+          },
+          {
+            spawn
+          },
+          {
+            spawn
+          },
+          {
+            spawn
+          },
+          {
+            spawn
+          },
+          {
+            spawn
+          },
         ]
       },
       {
@@ -120,16 +160,20 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleSpecial,
         jobs: [
           {
-            sourceId: '5bbcad9c9099fc012e63782c' as Id<Source>,
-            linkId: '5e9f1bea55e44a5c555d9240' as Id<StructureLink>,
-            containerId: '5e9c64a3ca9187de7ee861eb' as Id<StructureContainer>
+            sourceId: '5bbcad8b9099fc012e6376b4' as Id<Source>,
+            containerId: '5eaeb00fa7f2ba6b1373eaa9' as Id<StructureContainer>
           },
           {
-            sourceId: '5bbcad9c9099fc012e63782b' as Id<Source>,
-            linkId: '5ea9a0a9f8dd917b6c103481' as Id<StructureLink>,
-            containerId: '5ea44320fc04d6d37a191992' as Id<StructureContainer>
+            sourceId: '5bbcad8b9099fc012e6376b5' as Id<Source>,
+            containerId: '5eaeaebc35fbe00a70a855f9' as Id<StructureContainer>
           }
         ]
+      },
+      {
+        role: 'transport',
+        minimum: 1,
+        runner: roleTransport,
+        jobs: []
       },
       {
         role: 'repair',
@@ -138,40 +182,73 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         jobs: []
       },
       {
+        role: 'suicide',
+        minimum: (() => {
+          const storageId = '5e9d1747c0e18f2c5cf16473' as Id<StructureStorage>;
+          const storage = Game.getObjectById(storageId);
+
+          if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
+            return 6;
+          } else {
+            return 0;
+          }
+        })(),
+        runner: roleSuicide,
+        jobs: []
+      },
+      {
         role: 'upgrader',
-        minimum: 0,
+        minimum: 1,
         runner: roleUpgrader,
         jobs: [
-          {
-            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
-            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
-          },
-          {
-            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
-            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
-          },
-          {
-            linkId: '5ea44320fc04d6d37a191992' as Id<StructureLink>,
-            containerId: '5ea446a16586591e643f21f1' as Id<StructureContainer>
-          },
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
         ]
       },
       {
-        role: 'colonizer',
+        role: 'remoteMiner',
         minimum: 0,
+        runner: roleRemoteMiner,
+        jobs: []
+      },
+      {
+        role: 'builder',
+        minimum: (
+          spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
+          spawn.room.find(FIND_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.75)
+          })
+        ) ? 1 : 0,
+        runner: roleBuilder,
+        jobs: []
+      },
+      {
+        role: 'scout',
+        minimum: 0,
+        runner: roleScout,
+        jobs: []
+      },
+      {
+        role: 'colonizer',
+        minimum: (
+          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.controller && Game.flags.colonize.room.controller.my
+        ) ? 1 : 0,
         runner: roleColonizer,
         jobs: []
       },
       {
         role: 'founder',
-        minimum: 0,
+        minimum: (
+          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.find(FIND_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_SPAWN
+          }).length === 0
+        ) ? 2 : 0,
         runner: roleFounder,
-        jobs: []
-      },
-      {
-        role: 'suicide',
-        minimum: 0,
-        runner: roleSuicide,
         jobs: []
       },
       {
@@ -180,94 +257,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleDestroyer,
         jobs: []
       },
-      {
-        role: 'remoteMiner',
-        minimum: 2,
-        runner: roleRemoteMiner,
-        jobs: []
-      },
-      {
-        role: 'builder',
-        // minimum: spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ? 2 : 0,
-        minimum: 2,
-        runner: roleBuilder,
-        jobs: []
-      },
     ];
   } else if (spawnName === 'Spawn2') {
     return [
       {
-        role: 'defender',
-        minimum: 0,
-        runner: roleDefender,
-        jobs: []
-      },
-      {
-        role: 'transfer',
-        minimum: 1,
-        runner: roleTransfer,
-        jobs: [
-          {
-            linkId: '5ea5f555ae67a29d4d08f25a' as Id<StructureLink>
-          }
-        ]
-      },
-      {
-        role: 'harvester',
-        minimum: 1,
-        runner: roleHarvester,
-        jobs: [
-          {
-            spawn
-          }
-        ]
-      },
-      {
         role: 'settler',
-        minimum: 0,
+        minimum: 20,
         runner: roleSettler,
-        jobs: [
-          {
-            spawn,
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-          },
-        ]
-      },
-      {
-        role: 'special',
-        minimum: 1,
-        runner: roleSpecial,
-        jobs: [
-          {
-            sourceId: '5bbcad8a9099fc012e6376a4' as Id<Source>,
-            linkId: '5ea5ff1790352e1caf2ddd5b' as Id<StructureLink>,
-            containerId: '5ea60434454e1c1dd40aa457' as Id<StructureContainer>
-          },
-        ]
-      },
-      {
-        role: 'repair',
-        minimum: 1,
-        runner: roleRepair,
-        jobs: []
-      },
-      {
-        role: 'upgrader',
-        minimum: 1,
-        runner: roleUpgrader,
-        jobs: [
-          {},
-          {},
-          {},
-          {},
-          {},
-        ]
-      },
-      {
-        role: 'builder',
-        // minimum: spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ? 2 : 0,
-        minimum: 2,
-        runner: roleBuilder,
         jobs: []
       },
     ]

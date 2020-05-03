@@ -14,6 +14,16 @@ export const roleRepair = (creep: Creep) => {
       if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(storage)
       }
+    } else {
+      const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 900
+      });
+
+      if (container) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container);
+        }
+      }
     }
   } else {
     const damagedStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -30,17 +40,17 @@ export const roleRepair = (creep: Creep) => {
 
     if (damagedStructures) {
       if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(damagedStructures, { visualizePathStyle: { stroke: '#ffffff' } });
+        creep.moveTo(damagedStructures);
       }
     } else {
       const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
 
       if (structures[0]) {
         if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(structures[0], { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+          creep.moveTo(structures[0]);
         }
       } else {
-        creep.moveTo(25, 25);
+        creep.moveTo(31, 19);
       }
     }
   }

@@ -8,16 +8,44 @@ export const roleBuilder = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const storage = creep.room.storage;
+    const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
+      filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+    });
 
-    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
-      if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(storage)
+    if (ruin) {
+      if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(ruin);
+      }
+    } else {
+      const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
+      if (droppedResource) {
+        if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedResource);
+        }
+      } else {
+        const storage = creep.room.storage;
+
+        if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
+          if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(storage)
+          }
+        } else {
+          const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
+          });
+
+          if (container) {
+            if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(container);
+            }
+          }
+        }
       }
     }
   } else {
     const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: s => (s.structureType === STRUCTURE_WALL) && s.hits < 20000
+      filter: s => (s.structureType === STRUCTURE_RAMPART) && s.hits < 10000
     });
 
     if (wall) {
@@ -32,9 +60,9 @@ export const roleBuilder = (creep: Creep) => {
           creep.moveTo(constructionSite, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        for (const nextHits of [60, 120, 180, 240, 300, 360, 420, 480, 540, 600]) {
+        for (let i = 60; i < 3000; i += 60) {
           const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_WALL) && s.hits < (nextHits * 1000)
+            filter: s => (s.structureType === STRUCTURE_RAMPART) && s.hits < (i * 1000)
           });
 
           if (wall) {
