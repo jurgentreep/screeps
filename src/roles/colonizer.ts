@@ -8,6 +8,7 @@ export const roleColonizer = (creep: Creep) => {
       if (result === ERR_NOT_IN_RANGE) {
         creep.moveTo(controller, { visualizePathStyle: { stroke: '#00ffff' } });
       } else {
+        creep.moveTo(25, 25);
         if (Game.time % 10 === 0) {
           console.log(result);
         }
