@@ -9,51 +9,51 @@ export const roleSettler = (creep: Creep) => {
 
   if (Game.flags.colonize.room && creep.room.name === Game.flags.colonize.room.name) {
     if (creep.memory.working) {
-      const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
-        filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-      });
+      // const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
+      //   filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      // });
 
-      if (ruin) {
-        if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(ruin);
+      // if (ruin) {
+      //   if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      //     creep.moveTo(ruin);
+      //   }
+      // } else {
+      //   const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
+      //   if (droppedResource) {
+      //     if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+      //       creep.moveTo(droppedResource);
+      //     }
+      //   } else {
+      const storage = creep.room.storage;
+
+      if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       } else {
-        const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+        const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+          filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
+        });
 
-        if (droppedResource) {
-          if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(droppedResource);
+        if (container) {
+          if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(container);
           }
         } else {
-          const storage = creep.room.storage;
+          const resource = creep.pos.findClosestByPath(FIND_SOURCES);
 
-          if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
-            if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-              creep.moveTo(storage)
+          if (resource) {
+            if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(resource);
             }
           } else {
-            const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-              filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
-            });
-
-            if (container) {
-              if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(container);
-              }
-            } else {
-              const resource = creep.pos.findClosestByPath(FIND_SOURCES);
-
-              if (resource) {
-                if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
-                  creep.moveTo(resource);
-                }
-              } else {
-                creep.moveTo(25, 25);
-              }
-            }
+            creep.moveTo(25, 25);
           }
         }
       }
+      //   }
+      // }
     } else {
       const spawn = creep.pos.findClosestByPath<StructureSpawn>(FIND_STRUCTURES, {
         filter: s => s.structureType === STRUCTURE_SPAWN

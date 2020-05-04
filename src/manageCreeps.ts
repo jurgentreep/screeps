@@ -72,7 +72,7 @@ export const configureCreep = (role: string, energyAvailable: number, numberOfCr
   }
 
   if (role === 'upgrader') {
-    bodyParts = [MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   return bodyParts;
@@ -198,9 +198,16 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'upgrader',
-        minimum: 1,
+        minimum: 5,
         runner: roleUpgrader,
         jobs: [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
           {},
           {},
           {},
@@ -236,7 +243,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'colonizer',
         minimum: (
-          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.controller && Game.flags.colonize.room.controller.my
+          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.controller && Game.flags.colonize.room.controller.my === false
         ) ? 1 : 0,
         runner: roleColonizer,
         jobs: []
@@ -262,7 +269,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 20,
+        minimum: 14,
         runner: roleSettler,
         jobs: []
       },
