@@ -9,6 +9,8 @@ import { roleSuicide } from "roles/suicide";
 import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleBuilder } from "roles/builder";
 import { roleTransport } from "roles/transport";
+import { roleScout } from "roles/scout";
+import { roleDestroyer } from "roles/destroyer";
 
 export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
@@ -29,7 +31,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'transport') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   if (role === 'special') {
@@ -73,7 +75,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'destroyer') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK];
+    bodyParts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
   }
 
   if (role === 'scout') {
@@ -244,8 +246,20 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 10,
+        minimum: 7,
         runner: roleSettler,
+        jobs: []
+      },
+      {
+        role: 'scout',
+        minimum: 0,
+        runner: roleScout,
+        jobs: []
+      },
+      {
+        role: 'destroyer',
+        minimum: 0,
+        runner: roleDestroyer,
         jobs: []
       },
     ]
@@ -253,7 +267,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 14,
+        minimum: 10,
         runner: roleSettler,
         jobs: []
       },

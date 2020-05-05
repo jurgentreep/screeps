@@ -39,6 +39,24 @@ export const roleSettler = (creep: Creep) => {
             if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
               creep.moveTo(resource);
             }
+          } else {
+            const tombStone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+              filter: t => t.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+            });
+
+            if (tombStone) {
+              if (creep.withdraw(tombStone, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombStone);
+              }
+            } else {
+              const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
+              if (droppedResource) {
+                if (creep.pickup(droppedResource) === ERR_NOT_IN_RANGE) {
+                  creep.moveTo(droppedResource);
+                }
+              }
+            }
           }
         }
       }

@@ -1,24 +1,15 @@
 export const roleDestroyer = (creep: Creep) => {
-  const roomName = 'E12N46';
+  // creep.moveTo(46, 30);
+  const roomName = 'E12N36';
 
   if (creep.room.name === roomName) {
-    const tower = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s => s.structureType === STRUCTURE_TOWER
+    const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: s => s.structureType === STRUCTURE_SPAWN
     });
 
-    if (tower) {
-      if (creep.dismantle(tower) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(tower);
-      }
-    } else {
-      const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: s => s.structureType === STRUCTURE_SPAWN
-      });
-
-      if (spawn) {
-        if (creep.dismantle(spawn) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(spawn);
-        }
+    if (spawn) {
+      if (creep.dismantle(spawn) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(spawn);
       }
     }
   } else {
