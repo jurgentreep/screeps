@@ -17,19 +17,29 @@ export const roleFounder = (creep: Creep) => {
         }
       }
     } else {
-      const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+      const spawn = creep.pos.findClosestByPath<StructureSpawn>(FIND_STRUCTURES, {
+        filter: s => s.structureType === STRUCTURE_SPAWN
+      });
 
-      if (constructionSite) {
-        if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(constructionSite);
+      if (spawn && spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+        if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(spawn);
         }
       } else {
-        if (creep.room.controller) {
-          if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller);
+        const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+
+        if (constructionSite) {
+          if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(constructionSite);
           }
         } else {
-          console.log(`No controller in room ${creep.room.name}`);
+          if (creep.room.controller) {
+            if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(creep.room.controller);
+            }
+          } else {
+            console.log(`No controller in room ${creep.room.name}`);
+          }
         }
       }
     }

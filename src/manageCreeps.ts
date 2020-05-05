@@ -251,7 +251,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 30,
+        minimum: 14,
         runner: roleSettler,
         jobs: []
       },

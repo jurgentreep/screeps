@@ -8,27 +8,37 @@ export const roleSettler = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const storage = creep.room.storage;
+    const hostileEnergy = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+      filter: s => (s.structureType === STRUCTURE_EXTENSION || s.structureType === STRUCTURE_LINK) && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+    });
 
-    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
-      if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(storage)
+    if (hostileEnergy) {
+      if (creep.withdraw(hostileEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(hostileEnergy);
       }
     } else {
-      const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
-      });
+      const storage = creep.room.storage;
 
-      if (container) {
-        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(container);
+      if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) >= 50000) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage)
         }
       } else {
-        const resource = creep.pos.findClosestByPath(FIND_SOURCES);
+        const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+          filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
+        });
 
-        if (resource) {
-          if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(resource);
+        if (container) {
+          if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(container);
+          }
+        } else {
+          const resource = creep.pos.findClosestByPath(FIND_SOURCES);
+
+          if (resource) {
+            if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(resource);
+            }
           }
         }
       }
@@ -48,7 +58,7 @@ export const roleSettler = (creep: Creep) => {
           creep.moveTo(spawn);
         }
       } else {
-        const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const energyContainer = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
           filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION ||
               structure.structureType == STRUCTURE_TOWER) &&
