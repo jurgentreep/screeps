@@ -26,7 +26,7 @@ export const roleBuilder = (creep: Creep) => {
       }
     }
   } else {
-    const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+    const wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 10000
     });
 
@@ -35,7 +35,7 @@ export const roleBuilder = (creep: Creep) => {
         creep.moveTo(wall);
       }
     } else {
-      const constructionSite = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+      const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 
       if (constructionSite) {
         if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
@@ -43,7 +43,7 @@ export const roleBuilder = (creep: Creep) => {
         }
       } else {
         for (let i = 60; i <= 3000; i += 60) {
-          const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+          const wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (i * 1000)
           });
 
