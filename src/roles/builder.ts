@@ -8,44 +8,26 @@ export const roleBuilder = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
-      filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-    });
+    const storage = creep.room.storage;
 
-    if (ruin) {
-      if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(ruin);
+    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
+      if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(storage)
       }
     } else {
-      const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+      const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
+      });
 
-      if (droppedResource) {
-        if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(droppedResource);
-        }
-      } else {
-        const storage = creep.room.storage;
-
-        if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
-          if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(storage)
-          }
-        } else {
-          const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1000
-          });
-
-          if (container) {
-            if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-              creep.moveTo(container);
-            }
-          }
+      if (container) {
+        if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(container);
         }
       }
     }
   } else {
     const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: s => (s.structureType === STRUCTURE_RAMPART) && s.hits < 10000
+      filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 10000
     });
 
     if (wall) {
@@ -60,9 +42,9 @@ export const roleBuilder = (creep: Creep) => {
           creep.moveTo(constructionSite, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
         }
       } else {
-        for (let i = 60; i < 3000; i += 60) {
+        for (let i = 60; i <= 3000; i += 60) {
           const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART) && s.hits < (i * 1000)
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (i * 1000)
           });
 
           if (wall) {

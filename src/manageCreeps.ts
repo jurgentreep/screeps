@@ -2,19 +2,15 @@ import { roleFiller } from "roles/filler";
 import { roleUpgrader } from "roles/upgrader";
 import { roleSpecial } from "roles/special";
 import { roleRepair } from "roles/repair";
-import { roleTransfer } from "roles/transfer";
 import { roleColonizer } from "roles/colonizer";
 import { roleFounder } from "roles/founder";
-import { roleDefender } from "roles/defender";
 import { roleSettler } from "roles/settler";
 import { roleSuicide } from "roles/suicide";
-import { roleDestroyer } from "roles/destroyer";
 import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleBuilder } from "roles/builder";
-import { roleScout } from "roles/scout";
 import { roleTransport } from "roles/transport";
 
-export const configureCreep = (role: string, energyAvailable: number, numberOfCreeps: number) => {
+export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
   let bodyParts: BodyPartConstant[] = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
@@ -54,9 +50,22 @@ export const configureCreep = (role: string, energyAvailable: number, numberOfCr
 
   if (role === 'settler') {
     bodyParts = [MOVE, WORK, CARRY];
-    // if (numberOfCreeps >= 4) {
-    // bodyParts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
-    // }
+
+    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 400) {
+      bodyParts = [MOVE, MOVE, WORK, WORK, CARRY, CARRY];
+    }
+
+    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 600) {
+      bodyParts = [MOVE, MOVE, MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY];
+    }
+
+    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 800) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+    }
+
+    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 1000) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY];
+    }
   }
 
   if (role === 'suicide') {
@@ -87,7 +96,8 @@ const getJobIndex = (creeps: Creep[], jobs: Job[]) => {
 
 const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: Job[]) => {
   const energyAvailable = spawn.room.energyAvailable;
-  const bodyParts = configureCreep(role, energyAvailable, creeps.length);
+  const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
+  const bodyParts = configureCreep(role, energyAvailable, energyCapacityAvailable, creeps.length);
   const newName = role + Game.time;
   const jobIndex = getJobIndex(creeps, jobs);
 
@@ -108,47 +118,10 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   if (spawnName === 'Spawn1') {
     return [
       {
-        role: 'settler',
-        minimum: 0,
-        runner: roleSettler,
-        jobs: []
-      },
-      {
-        role: 'defender',
-        minimum: 0,
-        runner: roleDefender,
-        jobs: []
-      },
-      {
-        role: 'transfer',
-        minimum: 0,
-        runner: roleTransfer,
-        jobs: [
-          {
-            linkId: '5e9f1ef4b23f556e388f4cc0' as Id<StructureLink>
-          }
-        ]
-      },
-      {
         role: 'filler',
         minimum: 1,
         runner: roleFiller,
         jobs: [
-          {
-            spawn
-          },
-          {
-            spawn
-          },
-          {
-            spawn
-          },
-          {
-            spawn
-          },
-          {
-            spawn
-          },
           {
             spawn
           },
@@ -228,22 +201,24 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.75)
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000 * 0.75 // (s.hitsMax * 0.75)
           })
         ) ? 1 : 0,
         runner: roleBuilder,
         jobs: []
       },
       {
-        role: 'scout',
-        minimum: 0,
-        runner: roleScout,
-        jobs: []
-      },
-      {
         role: 'colonizer',
         minimum: (
-          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.controller && Game.flags.colonize.room.controller.my === false
+          (
+            Game.flags.colonize &&
+            Game.flags.colonize.room === undefined
+          ) || (
+            Game.flags.colonize &&
+            Game.flags.colonize.room &&
+            Game.flags.colonize.room.controller &&
+            Game.flags.colonize.room.controller.my === false
+          )
         ) ? 1 : 0,
         runner: roleColonizer,
         jobs: []
@@ -251,17 +226,15 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'founder',
         minimum: (
-          Game.flags.colonize && Game.flags.colonize.room && Game.flags.colonize.room.find(FIND_STRUCTURES, {
+          Game.flags.colonize &&
+          Game.flags.colonize.room &&
+          Game.flags.colonize.room.controller &&
+          Game.flags.colonize.room.controller.my &&
+          Game.flags.colonize.room.find(FIND_STRUCTURES, {
             filter: s => s.structureType === STRUCTURE_SPAWN
           }).length === 0
         ) ? 2 : 0,
         runner: roleFounder,
-        jobs: []
-      },
-      {
-        role: 'destroyer',
-        minimum: 0,
-        runner: roleDestroyer,
         jobs: []
       },
     ];
@@ -269,7 +242,16 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 14,
+        minimum: 10,
+        runner: roleSettler,
+        jobs: []
+      },
+    ]
+  } else if (spawnName === 'Spawn3') {
+    return [
+      {
+        role: 'settler',
+        minimum: 30,
         runner: roleSettler,
         jobs: []
       },

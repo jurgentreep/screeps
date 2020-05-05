@@ -33,4 +33,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       manageCreeps(spawn);
     }
   }
+
+  // Object.values(Game.rooms).forEach((room) => {
+  //   if (room.name === 'E11N37') {
+  //     room.find(FIND_HOSTILE_CONSTRUCTION_SITES).forEach(c => c.remove());
+  //   }
+  // })
 });
