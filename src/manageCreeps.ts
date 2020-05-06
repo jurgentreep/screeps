@@ -208,7 +208,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000 * 0.75 // (s.hitsMax * 0.75)
-          })
+          }).length > 0
         ) ? 1 : 0,
         runner: roleBuilder,
         jobs: []
@@ -305,6 +305,17 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           {},
           {},
         ]
+      },
+      {
+        role: 'builder',
+        minimum: (
+          spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
+          spawn.room.find(FIND_STRUCTURES, {
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000 * 0.75 // (s.hitsMax * 0.75)
+          }).length > 0
+        ) ? 1 : 0,
+        runner: roleBuilder,
+        jobs: []
       },
     ]
   } else if (spawnName === 'Spawn3') {

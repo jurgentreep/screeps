@@ -42,16 +42,6 @@ export const roleRepair = (creep: Creep) => {
       if (creep.repair(damagedStructures) == ERR_NOT_IN_RANGE) {
         creep.moveTo(damagedStructures);
       }
-    } else {
-      const structures = creep.room.find(FIND_CONSTRUCTION_SITES);
-
-      if (structures[0]) {
-        if (creep.build(structures[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(structures[0]);
-        }
-      } else {
-        creep.moveTo(31, 19);
-      }
     }
   }
 };
