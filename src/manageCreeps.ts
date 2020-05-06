@@ -9,8 +9,6 @@ import { roleSuicide } from "roles/suicide";
 import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleBuilder } from "roles/builder";
 import { roleTransport } from "roles/transport";
-import { roleScout } from "roles/scout";
-import { roleDestroyer } from "roles/destroyer";
 
 export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
@@ -75,7 +73,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'destroyer') {
-    bodyParts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   if (role === 'scout') {
@@ -83,7 +81,11 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'upgrader') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+
+    if (energyCapacityAvailable >= 1800) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    }
   }
 
   return bodyParts;
@@ -175,7 +177,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
-        ) ? 5 : 0,
+        ) ? 2 : 0,
         runner: roleUpgrader,
         jobs: [
           {},
@@ -245,12 +247,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   } else if (spawnName === 'Spawn2') {
     return [
       {
-        role: 'settler',
-        minimum: 0,
-        runner: roleSettler,
-        jobs: []
-      },
-      {
         role: 'filler',
         minimum: 1,
         runner: roleFiller,
@@ -277,27 +273,38 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'transport',
-        minimum: 0,
+        minimum: 1,
         runner: roleTransport,
         jobs: []
       },
       {
         role: 'repair',
-        minimum: 0,
+        minimum: 1,
         runner: roleRepair,
         jobs: []
       },
       {
-        role: 'scout',
-        minimum: 0,
-        runner: roleScout,
-        jobs: []
-      },
-      {
-        role: 'destroyer',
-        minimum: 0,
-        runner: roleDestroyer,
-        jobs: []
+        role: 'upgrader',
+        minimum: (
+          spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
+        ) ? 2 : 0,
+        runner: roleUpgrader,
+        jobs: [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+        ]
       },
     ]
   } else if (spawnName === 'Spawn3') {
