@@ -6,13 +6,14 @@ import { roleColonizer } from "roles/colonizer";
 import { roleFounder } from "roles/founder";
 import { roleSettler } from "roles/settler";
 import { roleSuicide } from "roles/suicide";
-import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleBuilder } from "roles/builder";
 import { roleTransport } from "roles/transport";
+import { roleDestroyer } from "roles/destroyer";
+import { roleRemoteMiner } from "roles/remoteMiner";
 
 export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
-  let bodyParts: BodyPartConstant[] = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+  let bodyParts: BodyPartConstant[] = [MOVE];
 
   if (role === 'transfer') {
     bodyParts = [MOVE, CARRY];
@@ -80,7 +81,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
     bodyParts = [MOVE];
   }
 
-  if (role === 'upgrader') {
+  if (role === 'upgrader' || role === 'remoteMiner' || role === 'builder') {
     bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
 
     if (energyCapacityAvailable >= 1800) {
@@ -120,6 +121,10 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   const spawnName = spawn.name;
 
   if (spawnName === 'Spawn1') {
+    // const creep = Game.getObjectById('5eb31201dd3086244181d891' as Id<Creep>);
+    // if (creep) {
+    //   spawn.recycleCreep(creep);
+    // }
     return [
       {
         role: 'filler',
@@ -165,7 +170,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           const storage = Game.getObjectById(storageId);
 
           if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
-            return 6;
+            return 1;
           } else {
             return 0;
           }
@@ -197,17 +202,11 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         ]
       },
       {
-        role: 'remoteMiner',
-        minimum: 0,
-        runner: roleRemoteMiner,
-        jobs: []
-      },
-      {
         role: 'builder',
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000 * 0.75 // (s.hitsMax * 0.75)
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
         ) ? 1 : 0,
         runner: roleBuilder,
@@ -241,6 +240,18 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           }).length === 0
         ) ? 2 : 0,
         runner: roleFounder,
+        jobs: []
+      },
+      {
+        role: 'destroyer',
+        minimum: 0,
+        runner: roleDestroyer,
+        jobs: []
+      },
+      {
+        role: 'remoteMiner',
+        minimum: 0,
+        runner: roleRemoteMiner,
         jobs: []
       },
     ];
@@ -311,7 +322,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000 * 0.75 // (s.hitsMax * 0.75)
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
         ) ? 1 : 0,
         runner: roleBuilder,

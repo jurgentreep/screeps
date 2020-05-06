@@ -17,24 +17,20 @@ export const roleTransport = (creep: Creep) => {
         creep.moveTo(container);
       }
     } else {
-      const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
-        filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      const tombStone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+        filter: t => t.store.getUsedCapacity(RESOURCE_ENERGY) > 0
       });
 
-      if (ruin) {
-        if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(ruin);
+      if (tombStone) {
+        if (creep.withdraw(tombStone, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(tombStone);
         }
       } else {
         const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 
         if (droppedResource) {
-          if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
+          if (creep.pickup(droppedResource) === ERR_NOT_IN_RANGE) {
             creep.moveTo(droppedResource);
-          }
-        } else {
-          if (creep.room.storage) {
-            creep.moveTo(creep.room.storage);
           }
         }
       }
