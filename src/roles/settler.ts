@@ -33,7 +33,7 @@ export const roleSettler = (creep: Creep) => {
             creep.moveTo(container);
           }
         } else {
-          const resource = creep.pos.findClosestByPath(FIND_SOURCES);
+          const resource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
           if (resource) {
             if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
@@ -89,19 +89,29 @@ export const roleSettler = (creep: Creep) => {
             creep.moveTo(energyContainer);
           }
         } else {
-          const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+          const repair = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: s => s.structureType === STRUCTURE_ROAD && s.hits < (s.hitsMax * 0.75)
+          })[0];
 
-          if (constructionSite) {
-            if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
-              creep.moveTo(constructionSite);
+          if (repair) {
+            if (creep.repair(repair) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(repair);
             }
           } else {
-            if (creep.room.controller) {
-              if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
+            const constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+
+            if (constructionSite) {
+              if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(constructionSite);
               }
             } else {
-              console.log(`No controller in room ${creep.room.name}`);
+              if (creep.room.controller) {
+                if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+                  creep.moveTo(creep.room.controller);
+                }
+              } else {
+                console.log(`No controller in room ${creep.room.name}`);
+              }
             }
           }
         }

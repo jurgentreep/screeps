@@ -174,7 +174,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'upgrader',
         minimum: (
-          spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 50000
+          spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
         ) ? 5 : 0,
         runner: roleUpgrader,
         jobs: [
@@ -246,8 +246,45 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 7,
+        minimum: 0,
         runner: roleSettler,
+        jobs: []
+      },
+      {
+        role: 'filler',
+        minimum: 1,
+        runner: roleFiller,
+        jobs: [
+          {
+            spawn
+          },
+        ]
+      },
+      {
+        role: 'special',
+        minimum: 2,
+        runner: roleSpecial,
+        jobs: [
+          {
+            sourceId: '5bbcad8b9099fc012e6376bf' as Id<Source>,
+            containerId: '5eb2d087d44c4fee989dd81e' as Id<StructureContainer>
+          },
+          {
+            sourceId: '5bbcad8b9099fc012e6376c1' as Id<Source>,
+            containerId: '5eb2d069014c804324ed4d93' as Id<StructureContainer>
+          }
+        ]
+      },
+      {
+        role: 'transport',
+        minimum: 0,
+        runner: roleTransport,
+        jobs: []
+      },
+      {
+        role: 'repair',
+        minimum: 0,
+        runner: roleRepair,
         jobs: []
       },
       {

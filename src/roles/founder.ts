@@ -9,7 +9,7 @@ export const roleFounder = (creep: Creep) => {
 
   if (Game.flags.colonize.room && creep.room.name === Game.flags.colonize.room.name) {
     if (creep.memory.working) {
-      const resource = creep.pos.findClosestByPath(FIND_SOURCES);
+      const resource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
       if (resource) {
         if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
