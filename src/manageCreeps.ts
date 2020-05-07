@@ -324,7 +324,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.find(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
-        ) ? 1 : 0,
+        ) ? 3 : 0,
         runner: roleBuilder,
         jobs: []
       },
@@ -333,8 +333,79 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 6,
+        minimum: 0,
         runner: roleSettler,
+        jobs: []
+      },
+      {
+        role: 'filler',
+        minimum: 1,
+        runner: roleFiller,
+        jobs: [
+          {
+            spawn
+          },
+        ]
+      },
+      {
+        role: 'special',
+        minimum: 2,
+        runner: roleSpecial,
+        jobs: [
+          {
+            sourceId: '5bbcad8b9099fc012e6376bd' as Id<Source>,
+            containerId: '5eb4235269ea70798adba0ae' as Id<StructureContainer>
+          },
+          {
+            sourceId: '5bbcad8b9099fc012e6376bc' as Id<Source>,
+            containerId: '5eb41e6e7fd840a5bc1cb220' as Id<StructureContainer>
+          }
+        ]
+      },
+      {
+        role: 'transport',
+        minimum: 1,
+        runner: roleTransport,
+        jobs: []
+      },
+      {
+        role: 'repair',
+        minimum: 1,
+        runner: roleRepair,
+        jobs: []
+      },
+      {
+        role: 'upgrader',
+        minimum: (
+          spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
+        ) ? 2 : 0,
+        runner: roleUpgrader,
+        jobs: [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+        ]
+      },
+      {
+        role: 'builder',
+        minimum: (
+          spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
+          spawn.room.find(FIND_STRUCTURES, {
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
+          }).length > 0
+        ) ? 1 : 0,
+        runner: roleBuilder,
         jobs: []
       },
     ]
@@ -359,7 +430,10 @@ export const manageCreeps = (spawn: StructureSpawn) => {
     }
 
     creeps.forEach((creep, index) => {
-      if (creep.memory.jobIndex !== undefined) {
+      // temporary fix because we have no tower to heal this creep
+      if (creep.getActiveBodyparts(MOVE) === 0) {
+        creep.suicide();
+      } else if (creep.memory.jobIndex !== undefined) {
         runner(creep, jobs[creep.memory.jobIndex]);
       } else {
         // fallback until everything has a job

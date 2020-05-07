@@ -35,7 +35,10 @@ export const roleUpgrader = (creep: Creep, job: UpgradeJob) => {
     }
   } else {
     if (creep.room.controller) {
-      if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+      // prevent upgrader from blocking the storage
+      if (creep.room.storage && creep.pos.inRangeTo(creep.room.storage, 1)) {
+        creep.moveTo(creep.room.controller);
+      } else if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
         creep.moveTo(creep.room.controller);
       }
     }
