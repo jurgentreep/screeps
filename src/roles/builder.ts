@@ -10,7 +10,7 @@ export const roleBuilder = (creep: Creep) => {
   if (creep.memory.working) {
     const storage = creep.room.storage;
 
-    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
+    if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 50000) {
       if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(storage)
       }
