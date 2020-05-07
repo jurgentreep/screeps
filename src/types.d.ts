@@ -29,36 +29,23 @@ declare global {
     linkId: Id<StructureLink>
   }
 
-  interface FillerJob {
-    spawn: StructureSpawn
-  }
-
-  interface SettlerJob {
-    spawn: StructureSpawn
-  }
-
-  type Job = SpecialJob | UpgradeJob | TransferJob | FillerJob | SettlerJob;
+  type Job = SpecialJob | UpgradeJob | TransferJob;
 
   type Role = {
     role: 'special'
     minimum: number
-    runner: (creep: Creep, job: SpecialJob) => void
+    runner: (creep: Creep, job?: SpecialJob) => void
     jobs: SpecialJob[]
   } | {
     role: 'upgrader'
     minimum: number
-    runner: (creep: Creep, job: UpgradeJob) => void
-    jobs: UpgradeJob[]
+    runner: (creep: Creep, job?: UpgradeJob) => void
+    jobs?: UpgradeJob[]
   } | {
     role: 'transfer'
     minimum: number
-    runner: (creep: Creep, job: TransferJob) => void
+    runner: (creep: Creep, job?: TransferJob) => void
     jobs: TransferJob[]
-  } | {
-    role: 'filler'
-    minimum: number
-    runner: (creep: Creep, job: FillerJob) => void
-    jobs: FillerJob[]
   } | {
     role: 'repair' |
     'colonizer' |
@@ -70,10 +57,11 @@ declare global {
     'builder' |
     'scout' |
     'transport' |
-    'settler'
+    'settler' |
+    'filler'
     minimum: number
-    runner: (creep: Creep) => void
-    jobs: any[]
+    runner: (creep: Creep, job?: any) => void
+    jobs?: any[]
   }
 }
 

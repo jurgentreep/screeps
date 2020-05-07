@@ -99,12 +99,16 @@ const getJobIndex = (creeps: Creep[], jobs: Job[]) => {
   return availableJobs[0];
 }
 
-const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: Job[]) => {
+const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs?: Job[]) => {
   const energyAvailable = spawn.room.energyAvailable;
   const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
   const bodyParts = configureCreep(role, energyAvailable, energyCapacityAvailable, creeps.length);
   const newName = role + Game.time;
-  const jobIndex = getJobIndex(creeps, jobs);
+  let jobIndex;
+
+  if (jobs) {
+    jobIndex = getJobIndex(creeps, jobs);
+  }
 
   spawn.spawnCreep(bodyParts, newName, {
     memory: {
@@ -112,8 +116,7 @@ const spawnCreep = (role: string, spawn: StructureSpawn, creeps: Creep[], jobs: 
       working: false,
       jobIndex,
       room: spawn.room.name,
-    },
-    // directions: [BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT],
+    }
   });
 }
 
@@ -129,12 +132,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'filler',
         minimum: 1,
-        runner: roleFiller,
-        jobs: [
-          {
-            spawn
-          },
-        ]
+        runner: roleFiller
       },
       {
         role: 'special',
@@ -154,14 +152,12 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'transport',
         minimum: 1,
-        runner: roleTransport,
-        jobs: []
+        runner: roleTransport
       },
       {
         role: 'repair',
         minimum: 1,
-        runner: roleRepair,
-        jobs: []
+        runner: roleRepair
       },
       {
         role: 'suicide',
@@ -175,31 +171,14 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             return 0;
           }
         })(),
-        runner: roleSuicide,
-        jobs: []
+        runner: roleSuicide
       },
       {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
         ) ? 2 : 0,
-        runner: roleUpgrader,
-        jobs: [
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-        ]
+        runner: roleUpgrader
       },
       {
         role: 'builder',
@@ -209,8 +188,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
         ) ? 1 : 0,
-        runner: roleBuilder,
-        jobs: []
+        runner: roleBuilder
       },
       {
         role: 'colonizer',
@@ -225,8 +203,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             Game.flags.colonize.room.controller.my === false
           )
         ) ? 1 : 0,
-        runner: roleColonizer,
-        jobs: []
+        runner: roleColonizer
       },
       {
         role: 'founder',
@@ -239,20 +216,17 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             filter: s => s.structureType === STRUCTURE_SPAWN
           }).length === 0
         ) ? 2 : 0,
-        runner: roleFounder,
-        jobs: []
+        runner: roleFounder
       },
       {
         role: 'destroyer',
         minimum: 0,
-        runner: roleDestroyer,
-        jobs: []
+        runner: roleDestroyer
       },
       {
         role: 'remoteMiner',
         minimum: 0,
-        runner: roleRemoteMiner,
-        jobs: []
+        runner: roleRemoteMiner
       },
     ];
   } else if (spawnName === 'Spawn2') {
@@ -260,12 +234,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'filler',
         minimum: 1,
-        runner: roleFiller,
-        jobs: [
-          {
-            spawn
-          },
-        ]
+        runner: roleFiller
       },
       {
         role: 'special',
@@ -285,37 +254,19 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'transport',
         minimum: 1,
-        runner: roleTransport,
-        jobs: []
+        runner: roleTransport
       },
       {
         role: 'repair',
         minimum: 1,
-        runner: roleRepair,
-        jobs: []
+        runner: roleRepair
       },
       {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
         ) ? 2 : 0,
-        runner: roleUpgrader,
-        jobs: [
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-        ]
+        runner: roleUpgrader
       },
       {
         role: 'builder',
@@ -325,8 +276,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
         ) ? 3 : 0,
-        runner: roleBuilder,
-        jobs: []
+        runner: roleBuilder
       },
     ]
   } else if (spawnName === 'Spawn3') {
@@ -334,18 +284,12 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'settler',
         minimum: 0,
-        runner: roleSettler,
-        jobs: []
+        runner: roleSettler
       },
       {
         role: 'filler',
         minimum: 1,
-        runner: roleFiller,
-        jobs: [
-          {
-            spawn
-          },
-        ]
+        runner: roleFiller
       },
       {
         role: 'special',
@@ -365,37 +309,19 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       {
         role: 'transport',
         minimum: 1,
-        runner: roleTransport,
-        jobs: []
+        runner: roleTransport
       },
       {
         role: 'repair',
         minimum: 1,
-        runner: roleRepair,
-        jobs: []
+        runner: roleRepair
       },
       {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
         ) ? 2 : 0,
-        runner: roleUpgrader,
-        jobs: [
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-          {},
-        ]
+        runner: roleUpgrader
       },
       {
         role: 'builder',
@@ -405,8 +331,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
         ) ? 1 : 0,
-        runner: roleBuilder,
-        jobs: []
+        runner: roleBuilder
       },
     ]
   } else {
@@ -438,11 +363,11 @@ export const manageCreeps = (room: Room) => {
         // temporary fix because we have no tower to heal this creep
         if (creep.getActiveBodyparts(MOVE) === 0) {
           creep.suicide();
-        } else if (creep.memory.jobIndex !== undefined) {
+        } else if (jobs && creep.memory.jobIndex !== undefined) {
           runner(creep, jobs[creep.memory.jobIndex]);
         } else {
           // fallback until everything has a job
-          runner(creep, jobs[index]);
+          runner(creep);
         }
       });
     });
