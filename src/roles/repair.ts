@@ -16,7 +16,7 @@ export const roleRepair = (creep: Creep) => {
       }
     } else {
       const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 900
+        filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 500
       });
 
       if (container) {

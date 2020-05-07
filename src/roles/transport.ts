@@ -9,7 +9,7 @@ export const roleTransport = (creep: Creep) => {
 
   if (creep.memory.working === true) {
     const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 1200
+      filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity() >= 500
     });
 
     if (container) {
