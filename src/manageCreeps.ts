@@ -415,42 +415,50 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   }
 }
 
-export const manageCreeps = (spawn: StructureSpawn) => {
-  const initialRoles = getRoles(spawn);
+export const manageCreeps = (room: Room) => {
+  const spawn = room.find<StructureSpawn>(FIND_MY_STRUCTURES, {
+    filter: s => s.structureType === STRUCTURE_SPAWN
+  })[0];
 
-  const roles = initialRoles.map(({ role, ...rest }) => ({
-    ...rest,
-    role,
-    creeps: _.filter(Game.creeps, (creep) => creep.memory.role === role && creep.memory.room === spawn.room.name)
-  }));
+  if (spawn) {
+    const initialRoles = getRoles(spawn);
 
-  roles.forEach(({ role, minimum, runner, creeps, jobs }) => {
-    if (creeps.length < minimum) {
-      spawnCreep(role, spawn, creeps, jobs);
-    }
+    const roles = initialRoles.map(({ role, ...rest }) => ({
+      ...rest,
+      role,
+      creeps: _.filter(Game.creeps, (creep) => creep.memory.role === role && creep.memory.room === spawn.room.name)
+    }));
 
-    creeps.forEach((creep, index) => {
-      // temporary fix because we have no tower to heal this creep
-      if (creep.getActiveBodyparts(MOVE) === 0) {
-        creep.suicide();
-      } else if (creep.memory.jobIndex !== undefined) {
-        runner(creep, jobs[creep.memory.jobIndex]);
-      } else {
-        // fallback until everything has a job
-        runner(creep, jobs[index]);
+    roles.forEach(({ role, minimum, runner, creeps, jobs }) => {
+      if (creeps.length < minimum) {
+        spawnCreep(role, spawn, creeps, jobs);
       }
+
+      creeps.forEach((creep, index) => {
+        // temporary fix because we have no tower to heal this creep
+        if (creep.getActiveBodyparts(MOVE) === 0) {
+          creep.suicide();
+        } else if (creep.memory.jobIndex !== undefined) {
+          runner(creep, jobs[creep.memory.jobIndex]);
+        } else {
+          // fallback until everything has a job
+          runner(creep, jobs[index]);
+        }
+      });
     });
-  });
 
-  if (spawn.spawning) {
-    const spawningCreep = Game.creeps[spawn.spawning.name];
+    if (spawn.spawning) {
+      const spawningCreep = Game.creeps[spawn.spawning.name];
 
-    spawn.room.visual.text(
-      '🛠️' + spawningCreep.memory.role,
-      spawn.pos.x + 1,
-      spawn.pos.y,
-      { align: 'left', opacity: 0.8 }
-    );
+      spawn.room.visual.text(
+        '🛠️' + spawningCreep.memory.role,
+        spawn.pos.x + 1,
+        spawn.pos.y,
+        { align: 'left', opacity: 0.8 }
+      );
+    }
+  } else {
+    // TODO: spawn is destroyed what to do now!?
   }
 }
 
