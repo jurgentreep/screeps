@@ -21,7 +21,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'filler') {
-    if (energyAvailable >= 1300) {
+    if (energyAvailable >= 1300 || numberOfCreeps >= 1) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     } else if (energyAvailable >= 1000) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
@@ -195,7 +195,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.find(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
-        ) ? 1 : 0,
+        ) ? 3 : 0,
         runner: roleBuilder
       },
       {
@@ -363,18 +363,18 @@ export const manageCreeps = (room: Room) => {
     }));
 
     roles.forEach(({ role, minimum, runner, creeps, jobs }) => {
-      if (creeps.length < minimum) {
+      const shouldSpawnFiller = (
+        role === 'filler' && creeps[0]?.ticksToLive ? creeps[0].ticksToLive < 100 : false
+      );
+
+      if (creeps.length < minimum || shouldSpawnFiller) {
         spawnCreep(role, spawn, creeps, jobs);
       }
 
-      creeps.forEach((creep, index) => {
-        // temporary fix because we have no tower to heal this creep
-        if (creep.getActiveBodyparts(MOVE) === 0) {
-          creep.suicide();
-        } else if (jobs && creep.memory.jobIndex !== undefined) {
+      creeps.forEach((creep) => {
+        if (jobs && creep.memory.jobIndex !== undefined) {
           runner(creep, jobs[creep.memory.jobIndex]);
         } else {
-          // fallback until everything has a job
           runner(creep);
         }
       });
