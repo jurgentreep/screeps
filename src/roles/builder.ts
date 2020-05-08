@@ -39,7 +39,7 @@ export const roleBuilder = (creep: Creep) => {
 
       if (constructionSite) {
         if (creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(constructionSite, { visualizePathStyle: { stroke: '#ffffff', lineStyle: 'solid' } });
+          creep.moveTo(constructionSite);
         }
       } else {
         for (let i = 60; i <= 3000; i += 60) {

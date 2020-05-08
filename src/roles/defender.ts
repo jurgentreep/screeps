@@ -8,6 +8,12 @@ export const roleDefender = (creep: Creep) => {
       creep.moveTo(hostile, { visualizePathStyle: { stroke: '#ff0000', lineStyle: 'solid' } });
     }
   } else {
-    creep.moveTo(25, 25);
+    const spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: s => s.structureType === STRUCTURE_SPAWN
+    });
+
+    if (spawn) {
+      creep.moveTo(spawn);
+    }
   }
 }

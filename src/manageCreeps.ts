@@ -10,6 +10,7 @@ import { roleBuilder } from "roles/builder";
 import { roleTransport } from "roles/transport";
 import { roleDestroyer } from "roles/destroyer";
 import { roleRemoteMiner } from "roles/remoteMiner";
+import { roleDefender } from "roles/defender";
 
 export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
@@ -20,12 +21,14 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'filler') {
-    bodyParts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
-
-    if (energyAvailable >= 600) {
-      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
-    } else if (energyAvailable >= 500) {
-      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
+    if (energyAvailable >= 1300) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else if (energyAvailable >= 1000) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else if (energyAvailable >= 700) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else {
+      bodyParts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
     }
   }
 
@@ -46,26 +49,24 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'defender') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK];
+    if (energyCapacityAvailable >= 1690) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK];
+    } else {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK];
+    }
   }
 
   if (role === 'settler') {
-    bodyParts = [MOVE, WORK, CARRY];
-
-    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 400) {
-      bodyParts = [MOVE, MOVE, WORK, WORK, CARRY, CARRY];
-    }
-
-    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 600) {
-      bodyParts = [MOVE, MOVE, MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY];
-    }
-
-    if (numberOfCreeps >= 4 && energyCapacityAvailable >= 800) {
-      bodyParts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
-    }
-
     if (numberOfCreeps >= 4 && energyCapacityAvailable >= 1000) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else if (numberOfCreeps >= 4 && energyCapacityAvailable >= 800) {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+    } else if (numberOfCreeps >= 4 && energyCapacityAvailable >= 600) {
+      bodyParts = [MOVE, MOVE, MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY];
+    } else if (numberOfCreeps >= 4 && energyCapacityAvailable >= 400) {
+      bodyParts = [MOVE, MOVE, WORK, WORK, CARRY, CARRY];
+    } else {
+      bodyParts = [MOVE, WORK, CARRY];
     }
   }
 
@@ -82,10 +83,10 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'upgrader' || role === 'remoteMiner' || role === 'builder') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
-
     if (energyCapacityAvailable >= 1800) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    } else {
+      bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     }
   }
 
@@ -179,6 +180,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
         ) ? 2 : 0,
         runner: roleUpgrader
+      },
+      {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
       },
       {
         role: 'builder',
