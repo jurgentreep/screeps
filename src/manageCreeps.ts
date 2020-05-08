@@ -330,7 +330,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.find(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
-        ) ? 1 : 0,
+        ) ? 3 : 0,
         runner: roleBuilder
       },
     ]
