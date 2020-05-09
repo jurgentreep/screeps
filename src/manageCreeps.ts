@@ -378,7 +378,7 @@ export const manageCreeps = (room: Room) => {
 
     roles.forEach(({ role, minimum, runner, creeps, jobs }) => {
       const shouldSpawnFiller = (
-        role === 'filler' && creeps[0]?.ticksToLive ? creeps[0].ticksToLive < 100 : false
+        role === 'filler' && creeps.length === 1 && creeps[0]?.ticksToLive ? creeps[0].ticksToLive < 100 : false
       );
 
       if (spawn.spawning === null && (creeps.length < minimum || shouldSpawnFiller)) {
