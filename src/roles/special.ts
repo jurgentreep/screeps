@@ -50,6 +50,6 @@ export const roleSpecial = (creep: Creep, job?: SpecialJob) => {
       }
     }
   } else {
-    console.error(`${creep.name} can't work without a job`);
+    console.log(`${creep.name} can't work without a job`);
   }
 };

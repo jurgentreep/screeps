@@ -29,7 +29,15 @@ declare global {
     linkId: Id<StructureLink>
   }
 
-  type Job = SpecialJob | UpgradeJob | TransferJob;
+  interface ReserverJob {
+    roomName: string
+  }
+
+  interface RemoteMinerJob {
+    roomName: string
+  }
+
+  type Job = SpecialJob | UpgradeJob | TransferJob | ReserverJob | RemoteMinerJob;
 
   type Role = {
     role: 'special'
@@ -47,13 +55,22 @@ declare global {
     runner: (creep: Creep, job?: TransferJob) => void
     jobs: TransferJob[]
   } | {
+    role: 'reserver'
+    minimum: number
+    runner: (creep: Creep, job?: ReserverJob) => void
+    jobs: ReserverJob[]
+  } | {
+    role: 'remoteMiner'
+    minimum: number
+    runner: (creep: Creep, job?: RemoteMinerJob) => void
+    jobs: RemoteMinerJob[]
+  } | {
     role: 'repair' |
     'colonizer' |
     'founder' |
     'defender' |
     'suicide' |
     'destroyer' |
-    'remoteMiner' |
     'builder' |
     'scout' |
     'transport' |

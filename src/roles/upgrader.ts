@@ -26,7 +26,7 @@ export const roleUpgrader = (creep: Creep, job?: UpgradeJob) => {
           }
         }
       } else {
-        console.error(`${creep.name} has a job but no containerId or linkId`)
+        console.log(`${creep.name} has a job but no containerId or linkId`)
       }
     } else {
       const storage = creep.room.storage;

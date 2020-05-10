@@ -11,6 +11,7 @@ import { roleTransport } from "roles/transport";
 import { roleDestroyer } from "roles/destroyer";
 import { roleRemoteMiner } from "roles/remoteMiner";
 import { roleDefender } from "roles/defender";
+import { roleReserver } from "roles/reserver";
 
 export const configureCreep = (role: string, energyAvailable: number, energyCapacityAvailable: number, numberOfCreeps: number) => {
   // Upgraders
@@ -48,6 +49,10 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
     bodyParts = [MOVE, CLAIM];
   }
 
+  if (role === 'reserver') {
+    bodyParts = [MOVE, MOVE, CLAIM, CLAIM];
+  }
+
   if (role === 'defender') {
     if (energyCapacityAvailable >= 1690) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK];
@@ -71,7 +76,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
   }
 
   if (role === 'suicide') {
-    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
   }
 
   if (role === 'destroyer') {
@@ -168,20 +173,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleRepair
       },
       {
-        role: 'suicide',
-        minimum: (() => {
-          const storageId = '5e9d1747c0e18f2c5cf16473' as Id<StructureStorage>;
-          const storage = Game.getObjectById(storageId);
-
-          if (storage && storage.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })(),
-        runner: roleSuicide
-      },
-      {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
@@ -193,7 +184,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (3000000 * 0.9)
           }).length > 0
         ) ? 1 : 0,
         runner: roleBuilder
@@ -232,9 +223,81 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleDestroyer
       },
       {
+        role: 'reserver',
+        minimum: (() => {
+          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+
+          if (
+            room === undefined ||
+            (
+              room &&
+              room.controller &&
+              (
+                room.controller.reservation === undefined ||
+                (
+                  room.controller.reservation &&
+                  room.controller.reservation.ticksToEnd < 4500
+                )
+              )
+            )
+          ) {
+            return 1;
+          } else {
+            return 0;
+          }
+        })(),
+        runner: roleReserver,
+        jobs: [
+          {
+            roomName: 'E11N38'
+          }
+        ]
+      },
+      {
         role: 'remoteMiner',
-        minimum: 0,
-        runner: roleRemoteMiner
+        minimum: (() => {
+          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+
+          if (
+            room &&
+            room.controller &&
+            room.controller.reservation
+          ) {
+            return 2;
+          } else {
+            return 0;
+          }
+        })(),
+        runner: roleRemoteMiner,
+        jobs: [
+          {
+            roomName: 'E11N38'
+          },
+          {
+            roomName: 'E11N38'
+          }
+        ]
+      },
+      {
+        role: 'suicide',
+        minimum: (() => {
+          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+
+          if (room) {
+            const container = room.find(FIND_STRUCTURES, {
+              filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+            });
+
+            if (container) {
+              return 6;
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
+          }
+        })(),
+        runner: roleSuicide
       },
     ];
   } else if (spawnName === 'Spawn2') {
@@ -357,7 +420,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
     ]
   } else {
-    console.error('Unexpected spawnName');
+    console.log('Unexpected spawnName');
     return [];
   }
 }
