@@ -49,7 +49,9 @@ export const roleSettler = (creep: Creep) => {
                 creep.moveTo(tombStone);
               }
             } else {
-              const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+              const droppedResource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter: d => d.resourceType === RESOURCE_ENERGY
+              });
 
               if (droppedResource) {
                 if (creep.pickup(droppedResource) === ERR_NOT_IN_RANGE) {
