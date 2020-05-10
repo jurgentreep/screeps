@@ -284,11 +284,11 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
           if (room) {
-            const container = room.find(FIND_STRUCTURES, {
+            const containers = room.find(FIND_STRUCTURES, {
               filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
             });
 
-            if (container) {
+            if (containers.length) {
               return 6;
             } else {
               return 0;
@@ -415,7 +415,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
           spawn.room.find(FIND_STRUCTURES, {
             filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
           }).length > 0
-        ) ? 1 : 0,
+        ) ? 2 : 0,
         runner: roleBuilder
       },
     ]
@@ -441,7 +441,7 @@ export const manageCreeps = (room: Room) => {
 
     roles.forEach(({ role, minimum, runner, creeps, jobs }) => {
       const shouldSpawnFiller = (
-        role === 'filler' && creeps.length === 1 && creeps[0]?.ticksToLive ? creeps[0].ticksToLive < 100 : false
+        (role === 'filler' && creeps.length === 1 && creeps[0].ticksToLive) ? (creeps[0].ticksToLive < 100 || creeps[0].getActiveBodyparts(CARRY) < 10) : false
       );
 
       if (spawn.spawning === null && (creeps.length < minimum || shouldSpawnFiller)) {
