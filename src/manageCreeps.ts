@@ -176,7 +176,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
-        ) ? 2 : 0,
+        ) ? 4 : 0,
         runner: roleUpgrader
       },
       {
