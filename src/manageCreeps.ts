@@ -87,7 +87,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
     bodyParts = [MOVE];
   }
 
-  if (role === 'upgrader' || role === 'remoteMiner' || role === 'builder') {
+  if (role === 'upgrader' || role === 'remoteMiner' || role === 'builder' || role === 'founder') {
     if (energyCapacityAvailable >= 1800) {
       bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     } else {
@@ -176,7 +176,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
-        ) ? 4 : 0,
+        ) ? 3 : 0,
         runner: roleUpgrader
       },
       {
@@ -224,28 +224,29 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'reserver',
-        minimum: (() => {
-          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+        // minimum: (() => {
+        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-          if (
-            room === undefined ||
-            (
-              room &&
-              room.controller &&
-              (
-                room.controller.reservation === undefined ||
-                (
-                  room.controller.reservation &&
-                  room.controller.reservation.ticksToEnd < 4500
-                )
-              )
-            )
-          ) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })(),
+        //   if (
+        //     room === undefined ||
+        //     (
+        //       room &&
+        //       room.controller &&
+        //       (
+        //         room.controller.reservation === undefined ||
+        //         (
+        //           room.controller.reservation &&
+        //           room.controller.reservation.ticksToEnd < 4500
+        //         )
+        //       )
+        //     )
+        //   ) {
+        //     return 1;
+        //   } else {
+        //     return 0;
+        //   }
+        // })(),
+        minimum: 0,
         runner: roleReserver,
         jobs: [
           {
@@ -255,19 +256,20 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'remoteMiner',
-        minimum: (() => {
-          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+        // minimum: (() => {
+        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-          if (
-            room &&
-            room.controller &&
-            room.controller.reservation
-          ) {
-            return 2;
-          } else {
-            return 0;
-          }
-        })(),
+        //   if (
+        //     room &&
+        //     room.controller &&
+        //     room.controller.reservation
+        //   ) {
+        //     return 2;
+        //   } else {
+        //     return 0;
+        //   }
+        // })(),
+        minimum: 0,
         runner: roleRemoteMiner,
         jobs: [
           {
@@ -280,23 +282,24 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'suicide',
-        minimum: (() => {
-          const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+        // minimum: (() => {
+        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-          if (room) {
-            const containers = room.find(FIND_STRUCTURES, {
-              filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-            });
+        //   if (room) {
+        //     const containers = room.find(FIND_STRUCTURES, {
+        //       filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+        //     });
 
-            if (containers.length) {
-              return 6;
-            } else {
-              return 0;
-            }
-          } else {
-            return 0;
-          }
-        })(),
+        //     if (containers.length) {
+        //       return 6;
+        //     } else {
+        //       return 0;
+        //     }
+        //   } else {
+        //     return 0;
+        //   }
+        // })(),
+        minimum: 0,
         runner: roleSuicide
       },
     ];
@@ -419,6 +422,14 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleBuilder
       },
     ]
+  } else if (spawnName === 'Spawn4') {
+    return [
+      {
+        role: 'settler',
+        minimum: 8,
+        runner: roleSettler
+      },
+    ];
   } else {
     console.log('Unexpected spawnName');
     return [];
