@@ -176,7 +176,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
-        ) ? 3 : 0,
+        ) ? 2 : 0,
         runner: roleUpgrader
       },
       {
@@ -354,7 +354,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (3000000 * 0.9)
           }).length > 0
         ) ? 1 : 0,
         runner: roleBuilder
@@ -408,7 +408,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'upgrader',
         minimum: (
           spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
-        ) ? 2 : 0,
+        ) ? 4 : 0,
         runner: roleUpgrader
       },
       {
@@ -416,7 +416,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: (
           spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
           spawn.room.find(FIND_STRUCTURES, {
-            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < 3000000
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (3000000 * 0.9)
           }).length > 0
         ) ? 2 : 0,
         runner: roleBuilder
@@ -426,8 +426,55 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
     return [
       {
         role: 'settler',
-        minimum: 8,
+        minimum: 0,
         runner: roleSettler
+      },
+      {
+        role: 'filler',
+        minimum: 1,
+        runner: roleFiller
+      },
+      {
+        role: 'special',
+        minimum: 2,
+        runner: roleSpecial,
+        jobs: [
+          {
+            sourceId: '5bbcad8b9099fc012e6376b7' as Id<Source>,
+            containerId: '5ec2ce645deace30ac3e491a' as Id<StructureContainer>
+          },
+          {
+            sourceId: '5bbcad8b9099fc012e6376b8' as Id<Source>,
+            containerId: '5ec2cf419c43ed769dc752ed' as Id<StructureContainer>
+          }
+        ]
+      },
+      {
+        role: 'transport',
+        minimum: 1,
+        runner: roleTransport
+      },
+      {
+        role: 'repair',
+        minimum: 1,
+        runner: roleRepair
+      },
+      {
+        role: 'upgrader',
+        minimum: (
+          spawn.room.storage && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 100000
+        ) ? 2 : 0,
+        runner: roleUpgrader
+      },
+      {
+        role: 'builder',
+        minimum: (
+          spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0 ||
+          spawn.room.find(FIND_STRUCTURES, {
+            filter: s => (s.structureType === STRUCTURE_RAMPART || s.structureType === STRUCTURE_WALL) && s.hits < (3000000 * 0.9)
+          }).length > 0
+        ) ? 2 : 0,
+        runner: roleBuilder
       },
     ];
   } else {
