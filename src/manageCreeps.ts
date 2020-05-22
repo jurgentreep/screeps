@@ -130,10 +130,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   const spawnName = spawn.name;
 
   if (spawnName === 'Spawn1') {
-    // const creep = Game.getObjectById('5eb31201dd3086244181d891' as Id<Creep>);
-    // if (creep) {
-    //   spawn.recycleCreep(creep);
-    // }
     return [
       {
         role: 'filler',
