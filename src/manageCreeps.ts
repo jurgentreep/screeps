@@ -455,6 +455,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleTransport
       },
       {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
+      },
+      {
         role: 'repair',
         minimum: 1,
         runner: roleRepair
