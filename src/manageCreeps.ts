@@ -141,6 +141,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleFiller
       },
       {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
+      },
+      {
         role: 'special',
         minimum: 2,
         runner: roleSpecial,
@@ -159,13 +166,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'transport',
         minimum: 1,
         runner: roleTransport
-      },
-      {
-        role: 'defender',
-        minimum: (
-          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
-        ) ? 1 : 0,
-        runner: roleDefender
       },
       {
         role: 'repair',
@@ -311,6 +311,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleFiller
       },
       {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
+      },
+      {
         role: 'special',
         minimum: 2,
         runner: roleSpecial,
@@ -329,13 +336,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'transport',
         minimum: 1,
         runner: roleTransport
-      },
-      {
-        role: 'defender',
-        minimum: (
-          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
-        ) ? 1 : 0,
-        runner: roleDefender
       },
       {
         role: 'repair',
@@ -373,6 +373,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleFiller
       },
       {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
+      },
+      {
         role: 'special',
         minimum: 2,
         runner: roleSpecial,
@@ -391,13 +398,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'transport',
         minimum: 1,
         runner: roleTransport
-      },
-      {
-        role: 'defender',
-        minimum: (
-          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
-        ) ? 1 : 0,
-        runner: roleDefender
       },
       {
         role: 'repair',
@@ -435,6 +435,13 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleFiller
       },
       {
+        role: 'defender',
+        minimum: (
+          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
+        ) ? 1 : 0,
+        runner: roleDefender
+      },
+      {
         role: 'special',
         minimum: 2,
         runner: roleSpecial,
@@ -453,13 +460,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         role: 'transport',
         minimum: 1,
         runner: roleTransport
-      },
-      {
-        role: 'defender',
-        minimum: (
-          spawn.room.find(FIND_HOSTILE_CREEPS).length > 0
-        ) ? 1 : 0,
-        runner: roleDefender
       },
       {
         role: 'repair',

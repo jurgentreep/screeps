@@ -35,20 +35,26 @@ export const roleFiller = (creep: Creep) => {
         creep.moveTo(spawn);
       }
     } else {
-      const energyContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (structure.structureType == STRUCTURE_EXTENSION ||
-            structure.structureType == STRUCTURE_TOWER) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-        }
+      const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) => s.structureType === STRUCTURE_EXTENSION && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
       });
 
-      if (energyContainer) {
-        if (creep.transfer(energyContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(energyContainer);
+      if (extension) {
+        if (creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(extension);
         }
       } else {
-        creep.moveTo(spawn);
+        const tower = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+          filter: (s) => s.structureType === STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        });
+
+        if (tower) {
+          if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(tower);
+          }
+        } else {
+          creep.moveTo(spawn);
+        }
       }
     }
   }
