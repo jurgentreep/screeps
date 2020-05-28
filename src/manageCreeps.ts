@@ -81,6 +81,7 @@ export const configureCreep = (role: string, energyAvailable: number, energyCapa
 
   if (role === 'destroyer') {
     bodyParts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    // bodyParts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
   }
 
   if (role === 'scout') {
@@ -185,34 +186,34 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         ) ? 1 : 0,
         runner: roleBuilder
       },
-      {
-        role: 'colonizer',
-        minimum: (
-          (
-            Game.flags.colonize &&
-            Game.flags.colonize.room === undefined
-          ) || (
-            Game.flags.colonize &&
-            Game.flags.colonize.room &&
-            Game.flags.colonize.room.controller &&
-            Game.flags.colonize.room.controller.my === false
-          )
-        ) ? 1 : 0,
-        runner: roleColonizer
-      },
-      {
-        role: 'founder',
-        minimum: (
-          Game.flags.colonize &&
-          Game.flags.colonize.room &&
-          Game.flags.colonize.room.controller &&
-          Game.flags.colonize.room.controller.my &&
-          Game.flags.colonize.room.find(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_SPAWN
-          }).length === 0
-        ) ? 2 : 0,
-        runner: roleFounder
-      },
+      // {
+      //   role: 'colonizer',
+      //   minimum: (
+      //     (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room === undefined
+      //     ) || (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room &&
+      //       Game.flags.colonize.room.controller &&
+      //       Game.flags.colonize.room.controller.my === false
+      //     )
+      //   ) ? 1 : 0,
+      //   runner: roleColonizer
+      // },
+      // {
+      //   role: 'founder',
+      //   minimum: (
+      //     Game.flags.colonize &&
+      //     Game.flags.colonize.room &&
+      //     Game.flags.colonize.room.controller &&
+      //     Game.flags.colonize.room.controller.my &&
+      //     Game.flags.colonize.room.find(FIND_STRUCTURES, {
+      //       filter: s => s.structureType === STRUCTURE_SPAWN
+      //     }).length === 0
+      //   ) ? 2 : 0,
+      //   runner: roleFounder
+      // },
       {
         role: 'destroyer',
         minimum: 0,
@@ -355,6 +356,39 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         ) ? 1 : 0,
         runner: roleBuilder
       },
+      {
+        role: 'destroyer',
+        minimum: 0,
+        runner: roleDestroyer,
+      },
+      {
+        role: 'colonizer',
+        minimum: (
+          (
+            Game.flags.colonize &&
+            Game.flags.colonize.room === undefined
+          ) || (
+            Game.flags.colonize &&
+            Game.flags.colonize.room &&
+            Game.flags.colonize.room.controller &&
+            Game.flags.colonize.room.controller.my === false
+          )
+        ) ? 1 : 0,
+        runner: roleColonizer
+      },
+      {
+        role: 'founder',
+        minimum: (
+          Game.flags.colonize &&
+          Game.flags.colonize.room &&
+          Game.flags.colonize.room.controller &&
+          Game.flags.colonize.room.controller.my &&
+          Game.flags.colonize.room.find(FIND_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_SPAWN
+          }).length === 0
+        ) ? 2 : 0,
+        runner: roleFounder
+      },
     ]
   } else if (spawnName === 'Spawn3') {
     return [
@@ -480,6 +514,14 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleBuilder
       },
     ];
+  } else if (spawnName === 'Spawn5') {
+    return [
+      {
+        role: 'settler',
+        minimum: 8,
+        runner: roleSettler
+      }
+    ]
   } else {
     console.log('Unexpected spawnName');
     return [];
