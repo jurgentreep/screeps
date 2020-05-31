@@ -552,7 +552,7 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       },
       {
         role: 'transport',
-        minimum: 1,
+        minimum: 2,
         runner: roleTransport
       },
       {
