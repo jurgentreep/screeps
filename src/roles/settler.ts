@@ -8,13 +8,13 @@ export const roleSettler = (creep: Creep) => {
   }
 
   if (creep.memory.working) {
-    const hostileEnergy = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-      filter: s => (s.structureType === STRUCTURE_EXTENSION || s.structureType === STRUCTURE_LINK) && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+    const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
+      filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
     });
 
-    if (hostileEnergy) {
-      if (creep.withdraw(hostileEnergy, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(hostileEnergy);
+    if (ruin) {
+      if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(ruin);
       }
     } else {
       const storage = creep.room.storage;
