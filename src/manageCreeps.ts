@@ -216,91 +216,83 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
       //   ) ? 2 : 0,
       //   runner: roleFounder
       // },
-      {
-        role: 'destroyer',
-        minimum: 0,
-        runner: roleDestroyer
-      },
-      {
-        role: 'reserver',
-        // minimum: (() => {
-        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+      // {
+      //   role: 'reserver',
+      //   minimum: (() => {
+      //     const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-        //   if (
-        //     room === undefined ||
-        //     (
-        //       room &&
-        //       room.controller &&
-        //       (
-        //         room.controller.reservation === undefined ||
-        //         (
-        //           room.controller.reservation &&
-        //           room.controller.reservation.ticksToEnd < 4500
-        //         )
-        //       )
-        //     )
-        //   ) {
-        //     return 1;
-        //   } else {
-        //     return 0;
-        //   }
-        // })(),
-        minimum: 0,
-        runner: roleReserver,
-        jobs: [
-          {
-            roomName: 'E11N38'
-          }
-        ]
-      },
-      {
-        role: 'remoteMiner',
-        // minimum: (() => {
-        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+      //     if (
+      //       room === undefined ||
+      //       (
+      //         room &&
+      //         room.controller &&
+      //         (
+      //           room.controller.reservation === undefined ||
+      //           (
+      //             room.controller.reservation &&
+      //             room.controller.reservation.ticksToEnd < 4500
+      //           )
+      //         )
+      //       )
+      //     ) {
+      //       return 1;
+      //     } else {
+      //       return 0;
+      //     }
+      //   })(),
+      //   runner: roleReserver,
+      //   jobs: [
+      //     {
+      //       roomName: 'E11N38'
+      //     }
+      //   ]
+      // },
+      // {
+      //   role: 'remoteMiner',
+      //   minimum: (() => {
+      //     const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-        //   if (
-        //     room &&
-        //     room.controller &&
-        //     room.controller.reservation
-        //   ) {
-        //     return 2;
-        //   } else {
-        //     return 0;
-        //   }
-        // })(),
-        minimum: 0,
-        runner: roleRemoteMiner,
-        jobs: [
-          {
-            roomName: 'E11N38'
-          },
-          {
-            roomName: 'E11N38'
-          }
-        ]
-      },
-      {
-        role: 'suicide',
-        // minimum: (() => {
-        //   const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
+      //     if (
+      //       room &&
+      //       room.controller &&
+      //       room.controller.reservation
+      //     ) {
+      //       return 2;
+      //     } else {
+      //       return 0;
+      //     }
+      //   })(),
+      //   runner: roleRemoteMiner,
+      //   jobs: [
+      //     {
+      //       roomName: 'E11N38'
+      //     },
+      //     {
+      //       roomName: 'E11N38'
+      //     }
+      //   ]
+      // },
+      // {
+      //   role: 'suicide',
+      //   minimum: (() => {
+      //     const room = Object.values(Game.rooms).find((room) => room.name === 'E11N38');
 
-        //   if (room) {
-        //     const containers = room.find(FIND_STRUCTURES, {
-        //       filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-        //     });
+      //     if (room) {
+      //       const containers = room.find(FIND_STRUCTURES, {
+      //         filter: s => s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      //       });
 
-        //     if (containers.length) {
-        //       return 6;
-        //     } else {
-        //       return 0;
-        //     }
-        //   } else {
-        //     return 0;
-        //   }
-        // })(),
-        minimum: 0,
-        runner: roleSuicide
-      },
+      //       if (containers.length) {
+      //         return 6;
+      //       } else {
+      //         return 0;
+      //       }
+      //     } else {
+      //       return 0;
+      //     }
+      //   })(),
+      //   runner: roleSuicide
+      // },
     ];
   } else if (spawnName === 'Spawn2') {
     return [
@@ -363,34 +355,34 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         minimum: 0,
         runner: roleDestroyer,
       },
-      {
-        role: 'colonizer',
-        minimum: (
-          (
-            Game.flags.colonize &&
-            Game.flags.colonize.room === undefined
-          ) || (
-            Game.flags.colonize &&
-            Game.flags.colonize.room &&
-            Game.flags.colonize.room.controller &&
-            Game.flags.colonize.room.controller.my === false
-          )
-        ) ? 1 : 0,
-        runner: roleColonizer
-      },
-      {
-        role: 'founder',
-        minimum: (
-          Game.flags.colonize &&
-          Game.flags.colonize.room &&
-          Game.flags.colonize.room.controller &&
-          Game.flags.colonize.room.controller.my &&
-          Game.flags.colonize.room.find(FIND_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_SPAWN
-          }).length === 0
-        ) ? 2 : 0,
-        runner: roleFounder
-      },
+      // {
+      //   role: 'colonizer',
+      //   minimum: (
+      //     (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room === undefined
+      //     ) || (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room &&
+      //       Game.flags.colonize.room.controller &&
+      //       Game.flags.colonize.room.controller.my === false
+      //     )
+      //   ) ? 1 : 0,
+      //   runner: roleColonizer
+      // },
+      // {
+      //   role: 'founder',
+      //   minimum: (
+      //     Game.flags.colonize &&
+      //     Game.flags.colonize.room &&
+      //     Game.flags.colonize.room.controller &&
+      //     Game.flags.colonize.room.controller.my &&
+      //     Game.flags.colonize.room.find(FIND_STRUCTURES, {
+      //       filter: s => s.structureType === STRUCTURE_SPAWN
+      //     }).length === 0
+      //   ) ? 2 : 0,
+      //   runner: roleFounder
+      // },
     ]
   } else if (spawnName === 'Spawn3') {
     return [
@@ -457,11 +449,6 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
   } else if (spawnName === 'Spawn4') {
     return [
       {
-        role: 'settler',
-        minimum: 0,
-        runner: roleSettler
-      },
-      {
         role: 'filler',
         minimum: 1,
         runner: roleFiller
@@ -515,14 +502,37 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         ) ? 2 : 0,
         runner: roleBuilder
       },
+      // {
+      //   role: 'colonizer',
+      //   minimum: (
+      //     (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room === undefined
+      //     ) || (
+      //       Game.flags.colonize &&
+      //       Game.flags.colonize.room &&
+      //       Game.flags.colonize.room.controller &&
+      //       Game.flags.colonize.room.controller.my === false
+      //     )
+      //   ) ? 1 : 0,
+      //   runner: roleColonizer
+      // },
+      // {
+      //   role: 'founder',
+      //   minimum: (
+      //     Game.flags.colonize &&
+      //     Game.flags.colonize.room &&
+      //     Game.flags.colonize.room.controller &&
+      //     Game.flags.colonize.room.controller.my &&
+      //     Game.flags.colonize.room.find(FIND_STRUCTURES, {
+      //       filter: s => s.structureType === STRUCTURE_SPAWN
+      //     }).length === 0
+      //   ) ? 2 : 0,
+      //   runner: roleFounder
+      // },
     ];
   } else if (spawnName === 'Spawn5') {
     return [
-      {
-        role: 'settler',
-        minimum: 0,
-        runner: roleSettler
-      },
       {
         role: 'filler',
         minimum: 1,
@@ -578,6 +588,14 @@ const getRoles = (spawn: StructureSpawn): Role[] => {
         runner: roleBuilder
       },
     ]
+  } else if (spawnName === 'Spawn6') {
+    return [
+      {
+        role: 'settler',
+        minimum: 8,
+        runner: roleSettler
+      },
+    ];
   } else {
     console.log('Unexpected spawnName');
     return [];

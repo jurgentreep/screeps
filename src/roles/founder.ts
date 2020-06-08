@@ -9,16 +9,26 @@ export const roleFounder = (creep: Creep) => {
 
   if (Game.flags.colonize.room && creep.room.name === Game.flags.colonize.room.name) {
     if (creep.memory.working) {
-      if (creep.room.storage) {
-        if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(creep.room.storage);
+      const ruin = creep.pos.findClosestByPath(FIND_RUINS, {
+        filter: r => r.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      });
+
+      if (ruin) {
+        if (creep.withdraw(ruin, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(ruin);
         }
       } else {
-        const resource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+        if (creep.room.storage) {
+          if (creep.withdraw(creep.room.storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.storage);
+          }
+        } else {
+          const resource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
-        if (resource) {
-          if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(resource);
+          if (resource) {
+            if (creep.harvest(resource) === ERR_NOT_IN_RANGE) {
+              creep.moveTo(resource);
+            }
           }
         }
       }
